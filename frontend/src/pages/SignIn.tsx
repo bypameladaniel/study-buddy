@@ -13,7 +13,7 @@ import ActiveLearning from "../assets/ActiveLearning.png";
 import EfficientStudySessions from "../assets/EfficientStudySessions.png";
 import { Link, useNavigate } from "react-router-dom";
 
-// ── Icons ──────────────────────────────────────────────────────────────────
+// Icons  
 
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -25,7 +25,7 @@ const GoogleIcon = () => (
 );
 
 
-// ── Sub-components ─────────────────────────────────────────────────────────
+//Sub-components  
 
 const StudyBuddy: FC = () => (
   <div className="logo">
@@ -54,7 +54,7 @@ const FeatureItem = ({ icon, title, description }: FeatureItemProps) => (
   </div>
 );
 
-// ── Feature data ───────────────────────────────────────────────────────────
+// Feature data  ──
 
 interface Feature {
   icon: React.ReactNode;
@@ -87,7 +87,7 @@ const features: Feature[] = [
   }
 ];
 
-// ── Page component ─────────────────────────────────────────────────────────
+// Page component  
 
 export default function SignIn() {
   const [email, setEmail] = useState<string>("");
