@@ -1,1 +1,1 @@
-export type MODELS = "nvidia/nemotron-3-super-120b-a12b:free" | "" | "";
+export type Models = "llama-3.3-70b-versatile" | "meta-llama/llama-4-scout-17b-16e-instruct";
