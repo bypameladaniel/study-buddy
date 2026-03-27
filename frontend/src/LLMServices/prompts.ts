@@ -35,11 +35,17 @@ export async function generateQuiz(studyMaterial: string): Promise<string>{
     return sendMessage([
         {
             role: "system",
-            content: ""
+            content: "You are my personal study assistant. Your job is to take my study material and create practice quizzes with miltiple choice and short answer questions."
         },
         {
             role: "user",
-            content: `Generate a quiz from this study material:\n\n${studyMaterial}`
+            content: `Your job is to help me prepare for my exam by creating a practice quiz based on my study material. Please follow these steps\n:
+            1. Read through my study material\n
+            2. Create a clean formatted template exam style.\n
+            2. Make questions that highlight the important aspects that I should know.\n
+            3. Ensure that the questions cover all my study material\n
+            4. Generate the answer key at the end.\n\n
+            Here is my study material:\n\n${studyMaterial}`
         }
     ])
 }
@@ -48,11 +54,15 @@ export async function generateFlashCards(studyMaterial: string): Promise<string>
     return sendMessage([
         {
             role: "system",
-            content: ""
+            content: "You are a personal tutor preparing me for my exams. Your job is to create flashcards based on my study material"
         },
         {
             role: "user",
-            content: `Generate flashcards with this study material:\n\n${studyMaterial}`
+            content: `I have to prepare for my exam and i need you to generaye me some flashcards. Please follow these steps:
+            1. Read the study material\n
+            2. Generate questions to cover all the material
+            3. Format the output as: Q: "Your generated question" | A: "Your generated answer"\n\n
+            Here is my study material:\n\n${studyMaterial}`
         }
     ])
 }

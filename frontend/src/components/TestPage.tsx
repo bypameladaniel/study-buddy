@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { generateSummary, generateKeyPoints } from "../LLMServices/prompts";
+import { generateSummary, generateKeyPoints, generateFlashCards, generateQuiz } from "../LLMServices/prompts";
 import ReactMarkdown from "react-markdown";
 import { encodingForModel } from "js-tiktoken";
 
-type Action = "summarize" | "keypoints";
+type Action = "summarize" | "keypoints" | "flashcards" | "quizzes";
 
 export default function TestPage() {
   const [input, setInput] = useState("");
@@ -23,6 +23,8 @@ export default function TestPage() {
       let result = "";
       if (action === "summarize") result = await generateSummary(input);
       if (action === "keypoints") result = await generateKeyPoints(input);
+      if (action === "flashcards") result = await generateFlashCards(input);
+      if (action === "quizzes") result = await generateQuiz(input);
       setOutput(result);
     } catch (err) {
       setError((err as Error).message);
@@ -67,7 +69,7 @@ export default function TestPage() {
       />
 
       <div style={{ display: "flex", gap: 10, margin: "12px 0" }}>
-        {(["summarize", "keypoints"] as Action[]).map((action) => (
+        {(["summarize", "keypoints", "flashcards", "quizzes"] as Action[]).map((action) => (
           <button
             key={action}
             onClick={() => handleAction(action)}
