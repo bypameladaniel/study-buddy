@@ -4,7 +4,6 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
-  signOut,
 } from "firebase/auth";
 import { auth, googleProvider } from "../config/firebase";
 import "../styles/auth.css";
@@ -127,7 +126,7 @@ export default function SignIn() {
     setMessage("");
     try {
       await signInWithPopup(auth, googleProvider);
-      navigate("/rp");
+      navigate("/dashboard");
     } catch (err: unknown) {
       notify(err instanceof Error ? err.message : "Google sign-in failed", true);
     }
