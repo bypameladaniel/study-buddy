@@ -1,24 +1,38 @@
+/* Style for the logout icon */
+.sidebar__logout-icon {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  margin-right: 8px;
+  fill: #e53e3e;
+  font-weight: 700;
+}
 .sidebar {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 240px;
+  width: 280px;
   height: 100vh;
   background: #fff;
   border-right: 1px solid #e5e7eb;
   padding: 32px 16px 16px 16px;
   box-sizing: border-box;
+  font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+  align-items: center;
+  text-align: center;
 }
 
 .sidebar__top {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .sidebar__logo {
-  width: 120px;
+  width: 240px;
   margin-bottom: 40px;
+  background: none;
+  display: block;
 }
 
 .sidebar__nav {
@@ -26,6 +40,7 @@
   flex-direction: column;
   gap: 20px;
   width: 100%;
+  align-items: center;
 }
 
 .sidebar__button {
@@ -33,23 +48,31 @@
   border: none;
   color: #222;
   font-size: 1.1rem;
-  text-align: left;
+  text-align: center;
   padding: 10px 0;
   cursor: pointer;
   width: 100%;
   border-radius: 8px;
   transition: background 0.15s;
+  font-weight: 700;
 }
 
 .sidebar__button:hover, .sidebar__button:focus {
+  background: #e3efff;
+  color: #222;
+}
+
+/* Keep logout button hover unchanged */
+.sidebar__logout:hover, .sidebar__logout:focus {
   background: #f0f4f8;
+  color: #e53e3e;
 }
 
 .sidebar__new-session {
   color: #fff;
   background: #4f8cff;
   margin-bottom: 16px;
-  font-weight: 600;
+  font-weight: 700;
   border-radius: 8px;
   padding: 12px 0;
   transition: background 0.15s;
@@ -57,12 +80,13 @@
 
 .sidebar__new-session:hover, .sidebar__new-session:focus {
   background: #357ae8;
+  color: #fff;
 }
 
 .sidebar__bottom {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .sidebar__logout {
