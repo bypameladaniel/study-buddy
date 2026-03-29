@@ -1,21 +1,18 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import './index.css';
 
 import SignIn from "./pages/SignIn";
 import SignUp from './pages/SignUp';
-import RandomPage from './pages/randompage';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path ="/" element ={<SignIn/>}/>
-        <Route path = "/signup" element = {<SignUp/>}/>
-        <Route path = "/rp" element = {<RandomPage/>}/>
-        <Route path="/test" element={<TestPage />} />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path ="/" element ={<SignIn/>}/>
+      <Route path = "/signup" element = {<SignUp/>}/>
+      <Route path = "/dashboard" element = {<Dashboard/>}/>
+    </Routes>
   )
 }
 
