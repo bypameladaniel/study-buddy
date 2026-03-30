@@ -10,6 +10,8 @@ import logo from "../assets/logo.png";
 import ActiveLearning from "../assets/ActiveLearning.png";
 import EfficientStudySessions from "../assets/EfficientStudySessions.png";
 import { Link } from "react-router-dom";
+import LoadingOverlay from "../components/LoadingPageOverlay";
+import { useNavigate } from "react-router-dom";
 
 // Icons
 const GoogleIcon = () => (
@@ -68,6 +70,9 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const navigate = useNavigate();
 
   // Password rules (simplified)
   const passwordRules = {
@@ -91,19 +96,27 @@ export default function SignUp() {
   const handleSignUp = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!isFormValid) return;
+    setIsLoading(true);
 
     try {
       await createUserWithEmailAndPassword(auth, email, password);
+      navigate("/dashboard");
     } catch (err) {
       console.error(err);
+    }finally{
+      setIsLoading(false);
     }
   };
 
   const handleGoogle = async () => {
+    setIsLoading(true);
     try {
       await signInWithPopup(auth, googleProvider);
+      navigate("/dashboard");
     } catch (err) {
       console.error(err);
+    }finally{
+      setIsLoading(false);
     }
   };
 
@@ -184,7 +197,7 @@ export default function SignUp() {
             <button
               type="submit"
               className="btn btn--primary"
-              disabled={!isFormValid}
+              disabled={!isFormValid || isLoading}
             >
               Join the Study Gang
             </button>
@@ -201,11 +214,12 @@ export default function SignUp() {
             <div className="divider__line" />
           </div>
 
-          <button type="button" className="btn btn--social" onClick={handleGoogle}>
+          <button type="button" className="btn btn--social" onClick={handleGoogle} disabled={isLoading}>
             <GoogleIcon /> Sign in with Google
           </button>
         </div>
       </div>
+      {isLoading && <LoadingOverlay text="Creating your account..."/>}
     </div>
   );
 }

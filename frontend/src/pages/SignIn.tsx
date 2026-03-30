@@ -10,6 +10,7 @@ import logo from "../assets/logo.png";
 import ActiveLearning from "../assets/ActiveLearning.png";
 import EfficientStudySessions from "../assets/EfficientStudySessions.png";
 import { Link, useNavigate } from "react-router-dom";
+import LoadingOverlay from "../components/LoadingPageOverlay";
 
 // Icons  
 
@@ -93,6 +94,7 @@ export default function SignIn() {
   const [remember, setRemember] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const notify = (msg: string, error = false): void => {
@@ -103,21 +105,28 @@ export default function SignIn() {
   const handleSignIn = async (e: SyntheticEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setMessage("");
+    setIsLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
       navigate("/dashboard");
     } catch (err: unknown) {
+      setPassword("");
       notify("Invalid email or password", true);
+    }finally{
+      setIsLoading(false);
     }
   };
 
   const handleGoogle = async (): Promise<void> => {
     setMessage("");
+    setIsLoading(true);
     try {
       await signInWithPopup(auth, googleProvider);
       navigate("/dashboard");
-    } catch (err: unknown) {
-      notify(err instanceof Error ? err.message : "Google sign-in failed", true);
+    } catch {
+      notify("Google sign-in failed", true);
+    }finally{
+      setIsLoading(false);
     }
   };
 
@@ -180,8 +189,8 @@ export default function SignIn() {
             </div>
 
             {/* Submit */}
-            <button type="submit" className="btn btn--primary">
-              Sign in
+            <button type="submit" className="btn btn--primary" disabled={isLoading}>
+              {isLoading ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
@@ -206,7 +215,7 @@ export default function SignIn() {
           </div>
 
           {/* Social buttons */}
-          <button type="button" className="btn btn--social" onClick={handleGoogle}>
+          <button type="button" className="btn btn--social" onClick={handleGoogle}  disabled={isLoading}>
             <GoogleIcon /> Sign in with Google
           </button>
           
@@ -214,6 +223,7 @@ export default function SignIn() {
         </div>
 
       </div>
+      {isLoading && <LoadingOverlay text="Signing you in..."/>}
     </div>
   );
 }
