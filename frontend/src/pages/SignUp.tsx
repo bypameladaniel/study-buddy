@@ -10,7 +10,7 @@ import logo from "../assets/logo.png";
 import ActiveLearning from "../assets/ActiveLearning.png";
 import EfficientStudySessions from "../assets/EfficientStudySessions.png";
 import { Link } from "react-router-dom";
-import LoadingOverlay from "../components/LoadingPageOverlay";
+import LoadingOverlay from "../components/extra/LoadingPageOverlay";
 import { useNavigate } from "react-router-dom";
 
 // Icons
