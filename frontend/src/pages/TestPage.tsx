@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { generateSummary, generateKeyPoints, generateFlashCards, generateQuiz } from "../LLMServices/prompts";
+import { generateSummary, generateKeyPoints, generateFlashCards, generateQuiz } from "../LLMServices/services/prompts";
 import ReactMarkdown from "react-markdown";
 import { encodingForModel } from "js-tiktoken";
 
@@ -43,6 +43,7 @@ export default function TestPage() {
   const tokenCount = countTokens(input);
   const MAX_TOKENS_INPUT = 8000;
   const isTooLong = tokenCount > MAX_TOKENS_INPUT;
+  
 
   return (
     <div

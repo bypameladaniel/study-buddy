@@ -58,11 +58,20 @@ export async function generateFlashCards(studyMaterial: string): Promise<string>
         },
         {
             role: "user",
-            content: `I have to prepare for my exam and i need you to generaye me some flashcards. Please follow these steps:
-            1. Read the study material\n
-            2. Generate questions to cover all the material
-            3. Format the output as: Q: "Your generated question" | A: "Your generated answer"\n\n
-            Here is my study material:\n\n${studyMaterial}`
+            content: `I have to prepare for my exam and i need you to generaye me some flashcards. 
+            Please:
+            1. Read the study material
+            2. Generate flashcards that cover the important material
+            3. Return ONLY valid JSON in this exact format:
+            [
+            { "question": "Question 1", "answer": "Answer 1" },
+            { "question": "Question 2", "answer": "Answer 2" }
+            ]
+
+            Do not include markdown, code fences, or any extra text.
+
+            Here is my study material:
+            ${studyMaterial}`
         }
     ])
 }
