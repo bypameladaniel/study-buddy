@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import './index.css';
+import "./styles/loading.css";
 
 import SignIn from "./pages/SignIn";
 import SignUp from './pages/SignUp';
