@@ -26,3 +26,10 @@ export const dashboardColors = {
   uploadButtonText: "#2B2012",
   uploadButtonHover: "#E2A93A",
 } as const;
+
+export const workspaceColors = {
+  // Tabs 
+  tabBackground: "#E6EEF8",
+  tabInactive: "#DCE7F5",
+  tabActive: dashboardColors.cardBackground,
+} as const;

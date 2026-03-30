@@ -1,7 +1,15 @@
 import React from "react";
 import { dashboardColors } from "../../styles/colors";
+import { useNavigate } from "react-router-dom";
 
 const GenerateStudySessionCard: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleUpload = () => {
+ 
+    navigate("/study-workspace");
+  };
+
   return (
     <div style={styles.card}>
       <h2 style={styles.sectionTitle}>Generate New Study Session</h2>
@@ -14,6 +22,7 @@ const GenerateStudySessionCard: React.FC = () => {
       <div style={styles.uploadContainer}>
         <button
           style={styles.uploadButton}
+          onClick={handleUpload}
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor =
               dashboardColors.uploadButtonHover;
