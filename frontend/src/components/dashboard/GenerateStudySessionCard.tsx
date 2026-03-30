@@ -5,16 +5,28 @@ import { useNavigate } from "react-router-dom";
 const GenerateStudySessionCard: React.FC = () => {
   const navigate = useNavigate();
   const [text, setText] = useState("");
+  const [sessionName, setSessionName] = useState("");
 
   const handleUpload = () => {
     navigate("/study-workspace", {
-      state: { studyMaterial: text },
+      state: {
+        studyMaterial: text,
+        sessionTitle: sessionName || "Untitled Session",
+      },
     });
   };
 
   return (
     <div style={styles.card}>
       <h2 style={styles.sectionTitle}>Generate New Study Session</h2>
+
+      <input
+        type="text"
+        placeholder="Name your study session"
+        value={sessionName}
+        onChange={(e) => setSessionName(e.target.value)}
+        style={styles.input}
+      />
 
       <textarea
         placeholder="Paste your academic content here (Text only)"
@@ -73,6 +85,16 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontWeight: 600,
     cursor: "pointer",
     transition: "all 0.2s ease",
+  },
+  input: {
+    width: "100%",
+    padding: "12px",
+    borderRadius: "10px",
+    border: `1px solid ${dashboardColors.textareaBorder}`,
+    backgroundColor: dashboardColors.textareaBackground,
+    color: dashboardColors.textareaText,
+    marginBottom: "12px",
+    fontSize: "14px",
   },
 };
 

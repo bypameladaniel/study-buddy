@@ -15,8 +15,11 @@ const StudyWorkspace: React.FC = () => {
   const [output, setOutput] = useState("");
   const location = useLocation();
 
-  const studyMaterial =
-    (location.state as { studyMaterial?: string })?.studyMaterial || "";
+  const { studyMaterial, sessionTitle } =
+    (location.state as {
+      studyMaterial?: string;
+      sessionTitle?: string;
+    }) || {};
 
   const handleTabChange = async (tab: "summary" | "quiz" | "flashcards") => {
     setActiveTab(tab);
@@ -45,7 +48,7 @@ const StudyWorkspace: React.FC = () => {
       <div style={styles.main}>
         <div>
           <h1 style={styles.title}>Study Workspace</h1>
-          <p style={styles.subtitle}>SOEN 357 - Lecture 4: UX Design Process</p>
+          <p style={styles.subtitle}>{sessionTitle || "Untitled Session"}</p>
         </div>
 
         {/* Tabs */}
