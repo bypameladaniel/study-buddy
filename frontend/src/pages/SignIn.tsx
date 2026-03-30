@@ -1,7 +1,6 @@
 import { useState } from "react";
 import type { FC, SyntheticEvent } from "react";
 import {
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
@@ -108,17 +107,7 @@ export default function SignIn() {
       await signInWithEmailAndPassword(auth, email, password);
       navigate("/dashboard");
     } catch (err: unknown) {
-      notify(err instanceof Error ? err.message : "Sign-in failed", true);
-    }
-  };
-
-  const handleSignUp = async (): Promise<void> => {
-    setMessage("");
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      notify("Account created successfully");
-    } catch (err: unknown) {
-      notify(err instanceof Error ? err.message : "Sign-up failed", true);
+      notify("Invalid email or password", true);
     }
   };
 
@@ -165,7 +154,6 @@ export default function SignIn() {
             <div className="field field--password">
               <div className="field__header">
                 <label className="field__label field__label--inline">Password</label>
-                <a href="#" className="field__forgot">Forgot your password?</a>
               </div>
               <input
                 className="field__input"
@@ -177,15 +165,19 @@ export default function SignIn() {
             </div>
 
             {/* Remember me */}
-            <label className="remember">
-              <input
-                className="remember__checkbox"
-                type="checkbox"
-                checked={remember}
-                onChange={(e) => setRemember(e.target.checked)}
-              />
-              <span className="remember__label">Remember me</span>
-            </label>
+            <div className="remember-forgot">
+              <label className="remember">
+                <input
+                  className="remember__checkbox"
+                  type="checkbox"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)}
+                />
+                <span className="remember__label">Remember me</span>
+              </label>
+
+              <a href="#" className="field__forgot">Forgot your password?</a>
+            </div>
 
             {/* Submit */}
             <button type="submit" className="btn btn--primary">
