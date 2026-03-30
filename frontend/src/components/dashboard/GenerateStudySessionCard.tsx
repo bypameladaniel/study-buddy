@@ -6,8 +6,14 @@ const GenerateStudySessionCard: React.FC = () => {
   const navigate = useNavigate();
   const [text, setText] = useState("");
   const [sessionName, setSessionName] = useState("");
+  const [showError, setShowError] = useState(false);
 
   const handleUpload = () => {
+    if (!text.trim()){
+    setShowError(true);
+    return;
+    }
+    setShowError(false);
     navigate("/study-workspace", {
       state: {
         studyMaterial: text,
@@ -34,6 +40,11 @@ const GenerateStudySessionCard: React.FC = () => {
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
+     {showError && !text.trim() && (
+      <p style={{ color: "red", fontSize: "12px", marginTop: "6px" }}>
+      Please enter content before uploading.
+      </p>
+      )}
 
       <div style={styles.uploadContainer}>
         <button style={styles.uploadButton} onClick={handleUpload}>
