@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { dashboardColors } from "../../styles/colors";
 import { useNavigate } from "react-router-dom";
 
 const GenerateStudySessionCard: React.FC = () => {
   const navigate = useNavigate();
+  const [text, setText] = useState("");
 
   const handleUpload = () => {
- 
-    navigate("/study-workspace");
+    navigate("/study-workspace", {
+      state: { studyMaterial: text },
+    });
   };
 
   return (
@@ -17,23 +19,12 @@ const GenerateStudySessionCard: React.FC = () => {
       <textarea
         placeholder="Paste your academic content here (Text only)"
         style={styles.textarea}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
       />
 
       <div style={styles.uploadContainer}>
-        <button
-          style={styles.uploadButton}
-          onClick={handleUpload}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor =
-              dashboardColors.uploadButtonHover;
-            e.currentTarget.style.transform = "translateY(-1px)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor =
-              dashboardColors.uploadButtonBackground;
-            e.currentTarget.style.transform = "translateY(0)";
-          }}
-        >
+        <button style={styles.uploadButton} onClick={handleUpload}>
           Upload
         </button>
       </div>

@@ -1,31 +1,87 @@
 import React, { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { workspaceColors, dashboardColors } from "../styles/colors";
+import {
+  generateSummary,
+  generateQuiz,
+  generateFlashCards,
+} from "../LLMServices/prompts";
+import { useLocation } from "react-router-dom";
 
 const StudyWorkspace: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"summary" | "quiz" | "flashcards">("summary");
+  const [activeTab, setActiveTab] = useState<"summary" | "quiz" | "flashcards">(
+    "summary"
+  );
+  const [output, setOutput] = useState("");
+  const location = useLocation();
+
+  const studyMaterial =
+    (location.state as { studyMaterial?: string })?.studyMaterial || "";
+
+  const handleTabChange = async (tab: "summary" | "quiz" | "flashcards") => {
+    setActiveTab(tab);
+
+    if (!studyMaterial) return;
+
+    if (tab === "summary") {
+      const res = await generateSummary(studyMaterial);
+      setOutput(res);
+    }
+
+    if (tab === "quiz") {
+      const res = await generateQuiz(studyMaterial);
+      setOutput(res);
+    }
+
+    if (tab === "flashcards") {
+      const res = await generateFlashCards(studyMaterial);
+      setOutput(res);
+    }
+  };
 
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
       <Sidebar />
       <div style={styles.main}>
         <div>
-        <h1 style={styles.title}>Study Workspace</h1>
+          <h1 style={styles.title}>Study Workspace</h1>
           <p style={styles.subtitle}>SOEN 357 - Lecture 4: UX Design Process</p>
         </div>
 
         {/* Tabs */}
         <div style={styles.tabs}>
-          <TabButton label="Summary" active={activeTab === "summary"} onClick={() => setActiveTab("summary")} />
-          <TabButton label="Quiz" active={activeTab === "quiz"} onClick={() => setActiveTab("quiz")} />
-          <TabButton label="Flashcards" active={activeTab === "flashcards"} onClick={() => setActiveTab("flashcards")} />
+          <TabButton
+            label="Summary"
+            active={activeTab === "summary"}
+            onClick={() => handleTabChange("summary")}
+          />
+          <TabButton
+            label="Quiz"
+            active={activeTab === "quiz"}
+            onClick={() => handleTabChange("quiz")}
+          />
+          <TabButton
+            label="Flashcards"
+            active={activeTab === "flashcards"}
+            onClick={() => handleTabChange("flashcards")}
+          />
         </div>
 
         {/* Content Box */}
         <div style={styles.contentBox}>
-          {activeTab === "summary" && <p style={styles.contentText}>AI SUMMARIZED TEXT HERE</p>}
-          {activeTab === "quiz" && <p style={styles.contentText}>QUIZ CONTENT HERE</p>}
-          {activeTab === "flashcards" && <p style={styles.contentText}>FLASHCARDS CONTENT HERE</p>}
+          {activeTab === "summary" && (
+            <p style={styles.contentText}>
+              {output || "Generating summary..."}
+            </p>
+          )}
+          {activeTab === "quiz" && (
+            <p style={styles.contentText}>{output || "Generating quiz..."}</p>
+          )}
+          {activeTab === "flashcards" && (
+            <p style={styles.contentText}>
+              {output || "Generating flashcards..."}
+            </p>
+          )}
         </div>
       </div>
     </div>
@@ -35,27 +91,27 @@ const StudyWorkspace: React.FC = () => {
 export default StudyWorkspace;
 
 type TabProps = {
-    label: string;
-    active: boolean;
-    onClick: () => void;
-  };
-  
-  const TabButton: React.FC<TabProps> = ({ label, active, onClick }) => {
-    return (
-      <button
-        onClick={onClick}
-        style={{
-          ...styles.tabButton,
-          backgroundColor: active
-            ? workspaceColors.tabActive
-            : workspaceColors.tabInactive,
-          boxShadow: active ? "0 4px 12px rgba(0,0,0,0.08)" : "none",
-        }}
-      >
-        {label}
-      </button>
-    );
-  };
+  label: string;
+  active: boolean;
+  onClick: () => void;
+};
+
+const TabButton: React.FC<TabProps> = ({ label, active, onClick }) => {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        ...styles.tabButton,
+        backgroundColor: active
+          ? workspaceColors.tabActive
+          : workspaceColors.tabInactive,
+        boxShadow: active ? "0 4px 12px rgba(0,0,0,0.08)" : "none",
+      }}
+    >
+      {label}
+    </button>
+  );
+};
 
   const styles: { [key: string]: React.CSSProperties } = {
     title: {
