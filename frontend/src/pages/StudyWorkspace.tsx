@@ -196,16 +196,20 @@ const TabButton: React.FC<TabProps> = ({ label, active, onClick }) => {
       borderRadius: "16px",
       height: "400px",
       display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
+      justifyContent: "flex-start",
+      alignItems: "flex-start",
       backgroundColor: dashboardColors.cardBackground, 
       boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
       padding: "20px",
+      overflowY: "auto",
     },
   
     contentText: {
       fontSize: "18px",
       color: dashboardColors.textareaText, 
+      width: "100%",
+      whiteSpace: "pre-wrap",
+      textAlign: "left",
     },
     generateButton: {
       justifyContent: "center",
