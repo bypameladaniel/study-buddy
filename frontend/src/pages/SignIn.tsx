@@ -106,7 +106,7 @@ export default function SignIn() {
     setMessage("");
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/rp");
+      navigate("/dashboard");
     } catch (err: unknown) {
       notify(err instanceof Error ? err.message : "Sign-in failed", true);
     }
