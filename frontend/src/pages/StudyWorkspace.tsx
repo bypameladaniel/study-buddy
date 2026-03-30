@@ -8,11 +8,9 @@ import {
 } from "../LLMServices/prompts";
 import { useLocation } from "react-router-dom";
 
+type TabType = "summary" | "quiz" | "flashcards";
+
 const StudyWorkspace: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"summary" | "quiz" | "flashcards">(
-    "summary"
-  );
-  const [output, setOutput] = useState("");
   const location = useLocation();
 
   const { studyMaterial, sessionTitle } =
@@ -21,25 +19,50 @@ const StudyWorkspace: React.FC = () => {
       sessionTitle?: string;
     }) || {};
 
-  const handleTabChange = async (tab: "summary" | "quiz" | "flashcards") => {
-    setActiveTab(tab);
+  const [activeTab, setActiveTab] = useState<TabType>("summary");
 
+  const [outputs, setOutputs] = useState<Record<TabType, string>>({
+    summary: "",
+    quiz: "",
+    flashcards: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const handleGenerate = async () => {
     if (!studyMaterial) return;
 
-    if (tab === "summary") {
-      const res = await generateSummary(studyMaterial);
-      setOutput(res);
+    setLoading(true);
+
+    let result = "";
+
+    if (activeTab === "summary") {
+      result = await generateSummary(studyMaterial);
+    } else if (activeTab === "quiz") {
+      result = await generateQuiz(studyMaterial);
+    } else if (activeTab === "flashcards") {
+      result = await generateFlashCards(studyMaterial);
     }
 
-    if (tab === "quiz") {
-      const res = await generateQuiz(studyMaterial);
-      setOutput(res);
+    setOutputs((prev) => ({
+      ...prev,
+      [activeTab]: result,
+    }));
+
+    setLoading(false);
+  };
+
+  const getContent = () => {
+    const current = outputs[activeTab];
+
+    if (loading) {
+      return `Generating ${activeTab}...`;
     }
 
-    if (tab === "flashcards") {
-      const res = await generateFlashCards(studyMaterial);
-      setOutput(res);
+    if (!current) {
+      return `Click "Generate" to create a ${activeTab}.`;
     }
+    return current;
   };
 
   return (
@@ -56,35 +79,38 @@ const StudyWorkspace: React.FC = () => {
           <TabButton
             label="Summary"
             active={activeTab === "summary"}
-            onClick={() => handleTabChange("summary")}
+            onClick={() => setActiveTab("summary")}
           />
           <TabButton
             label="Quiz"
             active={activeTab === "quiz"}
-            onClick={() => handleTabChange("quiz")}
+            onClick={() => setActiveTab("quiz")}
           />
           <TabButton
             label="Flashcards"
             active={activeTab === "flashcards"}
-            onClick={() => handleTabChange("flashcards")}
+            onClick={() => setActiveTab("flashcards")}
           />
         </div>
 
-        {/* Content Box */}
+        {/* Generate Button */}
+        <div >
+          <button
+            onClick={handleGenerate}
+            disabled={loading}
+            style={{
+              ...styles.generateButton,
+              opacity: loading ? 0.6 : 1,
+              cursor: loading ? "not-allowed" : "pointer",
+            }}
+          >
+            {loading ? "Generating..." : `Generate ${activeTab}`}
+          </button>
+        </div>
+
+        {/* Output */}
         <div style={styles.contentBox}>
-          {activeTab === "summary" && (
-            <p style={styles.contentText}>
-              {output || "Generating summary..."}
-            </p>
-          )}
-          {activeTab === "quiz" && (
-            <p style={styles.contentText}>{output || "Generating quiz..."}</p>
-          )}
-          {activeTab === "flashcards" && (
-            <p style={styles.contentText}>
-              {output || "Generating flashcards..."}
-            </p>
-          )}
+          <p style={styles.contentText}>{getContent()}</p>
         </div>
       </div>
     </div>
@@ -180,5 +206,14 @@ const TabButton: React.FC<TabProps> = ({ label, active, onClick }) => {
     contentText: {
       fontSize: "18px",
       color: dashboardColors.textareaText, 
+    },
+    generateButton: {
+      justifyContent: "center",
+      marginTop: "20px",
+      borderRadius: "12px",
+      height: "40px",
+      width: "170px",
+      fontSize: "16px",
+      backgroundColor: workspaceColors.generateButtonBackground,
     },
   };

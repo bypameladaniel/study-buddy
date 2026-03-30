@@ -32,4 +32,7 @@ export const workspaceColors = {
   tabBackground: "#E6EEF8",
   tabInactive: "#DCE7F5",
   tabActive: dashboardColors.cardBackground,
+
+  // Button
+  generateButtonBackground: "#4D6887",
 } as const;
