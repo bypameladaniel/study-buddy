@@ -119,14 +119,11 @@ export default function SignIn() {
 
   const handleGoogle = async (): Promise<void> => {
     setMessage("");
-    setIsLoading(true);
     try {
       await signInWithPopup(auth, googleProvider);
       navigate("/dashboard");
     } catch {
       notify("Google sign-in failed", true);
-    }finally{
-      setIsLoading(false);
     }
   };
 

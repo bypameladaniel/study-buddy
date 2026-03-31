@@ -109,14 +109,11 @@ export default function SignUp() {
   };
 
   const handleGoogle = async () => {
-    setIsLoading(true);
     try {
       await signInWithPopup(auth, googleProvider);
       navigate("/dashboard");
     } catch (err) {
       console.error(err);
-    }finally{
-      setIsLoading(false);
     }
   };
 
