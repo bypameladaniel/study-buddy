@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import './index.css';
+import "./styles/loading.css";
 
 import SignIn from "./pages/SignIn";
 import SignUp from './pages/SignUp';
@@ -8,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import MyLibrary from './pages/MyLibrary';
 import Profile from './pages/Profile';
 import StudyWorkspace from './pages/StudyWorkspace';
+import TestPage from './pages/TestPage';
 
 function App() {
   return (
@@ -18,6 +20,7 @@ function App() {
       <Route path = "/mylibrary" element = {<MyLibrary/>}/>
       <Route path = "/profile" element = {<Profile/>}/>
       <Route path="/study-workspace" element={<StudyWorkspace />} />
+      <Route path = "/test" element = {<TestPage/>}/>
     </Routes>
   )
 }

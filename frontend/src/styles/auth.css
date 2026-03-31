@@ -129,6 +129,7 @@ html, body, #root {
 
 .field--password {
   margin-bottom: 18px;
+  align-items: flex-start
 }
 
 .field__header {
@@ -180,13 +181,48 @@ html, body, #root {
   text-decoration: underline;
 }
 
+.password-requirements {
+  width: 100%;
+  max-width: 220px;
+  margin-top: 6px;
+  margin-left: 2px;
+  text-align: left;
+}
+
+.password-requirements__title {
+  font-size: 0.7rem;  
+  margin-bottom: 4px;
+  color: #6b7280;
+}
+
+.password-rule {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  font-size: 0.68rem;
+  margin-bottom: 3px;
+  color: #6b7280;
+  text-align: left;
+}
+
+.password-rule__icon {
+  font-size: 9px;
+  width: 10px;
+  flex-shrink: 0;
+  color: #9ca3af;
+}
+
+.password-rule__icon--met {
+  color: #16a34a;
+}
 
 /*Remember me*/
 .remember {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 20px;
+  margin: 0px;
   cursor: pointer;
 }
 
@@ -244,6 +280,17 @@ html, body, #root {
   border-color: var(--color-border-hover);
 }
 
+.btn--primary:disabled {
+  background: #e5e7eb;   
+  color: #9ca3af;        
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn--primary {
+  transition: background 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+
 
 /*Divider*/
 .divider {
@@ -277,6 +324,18 @@ html, body, #root {
   text-decoration: underline;
 }
 
+.remember-forgot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.field__forgot {
+  font-size: 12px;
+  color: #6b7280;
+}
 
 /* Feedback message*/
 .feedback {

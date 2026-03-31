@@ -1,7 +1,6 @@
 import { useState } from "react";
 import type { FC, SyntheticEvent } from "react";
 import {
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
@@ -11,6 +10,7 @@ import logo from "../assets/logo.png";
 import ActiveLearning from "../assets/ActiveLearning.png";
 import EfficientStudySessions from "../assets/EfficientStudySessions.png";
 import { Link, useNavigate } from "react-router-dom";
+import LoadingOverlay from "../components/extra/LoadingPageOverlay";
 
 // Icons  
 
@@ -94,6 +94,7 @@ export default function SignIn() {
   const [remember, setRemember] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const notify = (msg: string, error = false): void => {
@@ -104,21 +105,15 @@ export default function SignIn() {
   const handleSignIn = async (e: SyntheticEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setMessage("");
+    setIsLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
       navigate("/dashboard");
     } catch (err: unknown) {
-      notify(err instanceof Error ? err.message : "Sign-in failed", true);
-    }
-  };
-
-  const handleSignUp = async (): Promise<void> => {
-    setMessage("");
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      notify("Account created successfully");
-    } catch (err: unknown) {
-      notify(err instanceof Error ? err.message : "Sign-up failed", true);
+      setPassword("");
+      notify("Invalid email or password", true);
+    }finally{
+      setIsLoading(false);
     }
   };
 
@@ -127,8 +122,8 @@ export default function SignIn() {
     try {
       await signInWithPopup(auth, googleProvider);
       navigate("/dashboard");
-    } catch (err: unknown) {
-      notify(err instanceof Error ? err.message : "Google sign-in failed", true);
+    } catch {
+      notify("Google sign-in failed", true);
     }
   };
 
@@ -165,7 +160,6 @@ export default function SignIn() {
             <div className="field field--password">
               <div className="field__header">
                 <label className="field__label field__label--inline">Password</label>
-                <a href="#" className="field__forgot">Forgot your password?</a>
               </div>
               <input
                 className="field__input"
@@ -177,19 +171,23 @@ export default function SignIn() {
             </div>
 
             {/* Remember me */}
-            <label className="remember">
-              <input
-                className="remember__checkbox"
-                type="checkbox"
-                checked={remember}
-                onChange={(e) => setRemember(e.target.checked)}
-              />
-              <span className="remember__label">Remember me</span>
-            </label>
+            <div className="remember-forgot">
+              <label className="remember">
+                <input
+                  className="remember__checkbox"
+                  type="checkbox"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)}
+                />
+                <span className="remember__label">Remember me</span>
+              </label>
+
+              <a href="#" className="field__forgot">Forgot your password?</a>
+            </div>
 
             {/* Submit */}
-            <button type="submit" className="btn btn--primary">
-              Sign in
+            <button type="submit" className="btn btn--primary" disabled={isLoading}>
+              {isLoading ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
@@ -214,7 +212,7 @@ export default function SignIn() {
           </div>
 
           {/* Social buttons */}
-          <button type="button" className="btn btn--social" onClick={handleGoogle}>
+          <button type="button" className="btn btn--social" onClick={handleGoogle}  disabled={isLoading}>
             <GoogleIcon /> Sign in with Google
           </button>
           
@@ -222,6 +220,7 @@ export default function SignIn() {
         </div>
 
       </div>
+      {isLoading && <LoadingOverlay text="Signing you in..."/>}
     </div>
   );
 }

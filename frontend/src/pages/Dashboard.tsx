@@ -2,7 +2,7 @@ import React from "react";
 import ContinueStudyingSection from "../components/dashboard/ContinueStudyingSection";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
 import GenerateStudySessionCard from "../components/dashboard/GenerateStudySessionCard";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/layout/Sidebar";
 import { dashboardColors } from "../styles/colors";
 
 const Dashboard: React.FC = () => {

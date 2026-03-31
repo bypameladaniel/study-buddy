@@ -1,10 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
-import { auth } from "../config/firebase";
-import logo from "../assets/logo.png";
-import logoutIcon from "../assets/logout.png";
-import "../styles/sidebar.css";
+import { auth } from "../../config/firebase";
+import logo from "../../assets/logo.png";
+import logoutIcon from "../../assets/logout.png";
+import "../../styles/sidebar.css";
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
