@@ -165,6 +165,14 @@ const Profile: React.FC = () => {
                   flex: 1,
                   transition: 'background 0.2s',
                 }}
+                onMouseOver={e => {
+                  (e.currentTarget as HTMLButtonElement).style.background = dashboardColors.uploadButtonHover;
+                  (e.currentTarget as HTMLButtonElement).style.color = dashboardColors.uploadButtonText;
+                }}
+                onMouseOut={e => {
+                  (e.currentTarget as HTMLButtonElement).style.background = dashboardColors.uploadButtonBackground;
+                  (e.currentTarget as HTMLButtonElement).style.color = dashboardColors.uploadButtonText;
+                }}
               >
                 {saving ? 'Saving...' : 'Save'}
               </button>
@@ -187,6 +195,12 @@ const Profile: React.FC = () => {
                   setFirstName(profile?.firstName || '');
                   setLastName(profile?.lastName || '');
                   setMessage('');
+                }}
+                onMouseOver={e => {
+                  (e.currentTarget as HTMLButtonElement).style.background = '#e0e7ef';
+                }}
+                onMouseOut={e => {
+                  (e.currentTarget as HTMLButtonElement).style.background = '#f5f5f5';
                 }}
               >
                 Cancel
@@ -229,6 +243,12 @@ const Profile: React.FC = () => {
                     setMessage("Failed to delete account.");
                   }
                 }
+              }}
+              onMouseOver={e => {
+                (e.currentTarget as HTMLButtonElement).style.background = '#ffe0e0';
+              }}
+              onMouseOut={e => {
+                (e.currentTarget as HTMLButtonElement).style.background = '#fff0f0';
               }}
             >
               Delete Account
