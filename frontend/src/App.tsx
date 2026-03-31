@@ -7,6 +7,7 @@ import SignUp from './pages/SignUp';
 import Dashboard from './pages/Dashboard';
 import MyLibrary from './pages/MyLibrary';
 import Profile from './pages/Profile';
+import StudyWorkspace from './pages/StudyWorkspace';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Route path = "/dashboard" element = {<Dashboard/>}/>
       <Route path = "/mylibrary" element = {<MyLibrary/>}/>
       <Route path = "/profile" element = {<Profile/>}/>
+      <Route path="/study-workspace" element={<StudyWorkspace />} />
     </Routes>
   )
 }
