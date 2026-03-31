@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { dashboardColors } from "../../styles/colors";
 import { useNavigate } from "react-router-dom";
+import {
+  createSessionId,
+  saveSession,
+} from "../../utils/sessionStorage";
 
 const GenerateStudySessionCard: React.FC = () => {
   const navigate = useNavigate();
