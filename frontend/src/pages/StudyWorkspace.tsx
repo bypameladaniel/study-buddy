@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/layout/Sidebar";
 import { workspaceColors, dashboardColors } from "../styles/colors";
 import {
   generateSummary,
   generateQuiz,
   generateFlashCards,
-} from "../LLMServices/prompts";
+} from "../LLMServices/services/prompts";
 import { useLocation } from "react-router-dom";
 
 type TabType = "summary" | "quiz" | "flashcards";
