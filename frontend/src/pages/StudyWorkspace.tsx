@@ -8,6 +8,7 @@ import {
   generateKeyPoints,
 } from "../LLMServices/services/prompts";
 import { useLocation } from "react-router-dom";
+import KeyPointsDisplay from "../components/study/KeyPointsDisplay";
 
 type TabType = "summary" | "quiz" | "flashcards" | "keypoints";
 
@@ -44,10 +45,9 @@ const StudyWorkspace: React.FC = () => {
       result = await generateQuiz(studyMaterial);
     } else if (activeTab === "flashcards") {
       result = await generateFlashCards(studyMaterial);
+    } else if (activeTab === "keypoints") {
+      result = await generateKeyPoints(studyMaterial);
     }
-      else if (activeTab === "keypoints"){
-        result = await generateKeyPoints(studyMaterial);
-      }
 
     setOutputs((prev) => ({
       ...prev,
@@ -104,7 +104,7 @@ const StudyWorkspace: React.FC = () => {
         </div>
 
         {/* Generate Button */}
-        <div >
+        <div>
           <button
             onClick={handleGenerate}
             disabled={loading}
@@ -120,7 +120,17 @@ const StudyWorkspace: React.FC = () => {
 
         {/* Output */}
         <div style={styles.contentBox}>
-          <p style={styles.contentText}>{getContent()}</p>
+          {loading ? (
+            <p style={styles.contentText}>Generating {activeTab}...</p>
+          ) : !outputs[activeTab] ? (
+            <p style={styles.contentText}>
+              Click "Generate" to create a {activeTab}.
+            </p>
+          ) : activeTab === "keypoints" ? (
+            <KeyPointsDisplay rawData={outputs.keypoints} />
+          ) : (
+            <p style={styles.contentText}>{outputs[activeTab]}</p>
+          )}
         </div>
       </div>
     </div>
