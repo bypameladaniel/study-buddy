@@ -9,6 +9,7 @@ import {
 } from "../LLMServices/services/prompts";
 import { useLocation } from "react-router-dom";
 import KeyPointsDisplay from "../components/study/KeyPointsDisplay";
+import SummaryDisplay from "../components/study/SummaryDisplay";
 
 type TabType = "summary" | "quiz" | "flashcards" | "keypoints";
 
@@ -126,6 +127,8 @@ const StudyWorkspace: React.FC = () => {
             <p style={styles.contentText}>
               Click "Generate" to create a {activeTab}.
             </p>
+          ) : activeTab === "summary" ? (
+            <SummaryDisplay rawData={outputs.summary} />
           ) : activeTab === "keypoints" ? (
             <KeyPointsDisplay rawData={outputs.keypoints} />
           ) : (
