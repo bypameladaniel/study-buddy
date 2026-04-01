@@ -25,6 +25,17 @@ export const dashboardColors = {
   uploadButtonBackground: "#F0BA4A",
   uploadButtonText: "#2B2012",
   uploadButtonHover: "#E2A93A",
+  cancelButtonBackground: "#f5f5f5",
+  cancelButtonText: "#444",
+  cancelButtonBorder: "#CBDCF4",
+  cancelButtonHover: "#e0e7ef",
+  cancelButtonActive: "#d3dae3",
+  deleteButtonBackground: "#fff0f0",
+  deleteButtonText: "#e53e3e",
+  deleteButtonBorder: "#e53e3e",
+  deleteButtonHover: "#ffe0e0",
+  deleteButtonActive: "#f8bcbc",
+  
 } as const;
 
 export const workspaceColors = {
