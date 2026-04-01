@@ -305,6 +305,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     border: `1px solid ${dashboardColors.cardBorder}`,
     fontSize: 16,
     marginBottom: 8,
+    background: "#fff",
   },
   disabledInput: {
     width: "100%",
