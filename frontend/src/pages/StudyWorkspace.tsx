@@ -5,10 +5,11 @@ import {
   generateSummary,
   generateQuiz,
   generateFlashCards,
+  generateKeyPoints,
 } from "../LLMServices/services/prompts";
 import { useLocation } from "react-router-dom";
 
-type TabType = "summary" | "quiz" | "flashcards";
+type TabType = "summary" | "quiz" | "flashcards" | "keypoints";
 
 const StudyWorkspace: React.FC = () => {
   const location = useLocation();
@@ -25,6 +26,7 @@ const StudyWorkspace: React.FC = () => {
     summary: "",
     quiz: "",
     flashcards: "",
+    keypoints: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -43,6 +45,9 @@ const StudyWorkspace: React.FC = () => {
     } else if (activeTab === "flashcards") {
       result = await generateFlashCards(studyMaterial);
     }
+      else if (activeTab === "keypoints"){
+        result = await generateKeyPoints(studyMaterial);
+      }
 
     setOutputs((prev) => ({
       ...prev,
@@ -80,6 +85,11 @@ const StudyWorkspace: React.FC = () => {
             label="Summary"
             active={activeTab === "summary"}
             onClick={() => setActiveTab("summary")}
+          />
+          <TabButton
+            label="Key Points"
+            active={activeTab === "keypoints"}
+            onClick={() => setActiveTab("keypoints")}
           />
           <TabButton
             label="Quiz"
