@@ -10,6 +10,7 @@ import {
 import { useLocation } from "react-router-dom";
 import KeyPointsDisplay from "../components/study/KeyPointsDisplay";
 import SummaryDisplay from "../components/study/SummaryDisplay";
+import QuizDisplay from "../components/study/QuizDisplay";
 
 type TabType = "summary" | "quiz" | "flashcards" | "keypoints";
 
@@ -131,6 +132,8 @@ const StudyWorkspace: React.FC = () => {
             <SummaryDisplay rawData={outputs.summary} />
           ) : activeTab === "keypoints" ? (
             <KeyPointsDisplay rawData={outputs.keypoints} />
+          ) : activeTab === "quiz" ? (
+            <QuizDisplay rawData={outputs.quiz} />
           ) : (
             <p style={styles.contentText}>{outputs[activeTab]}</p>
           )}
