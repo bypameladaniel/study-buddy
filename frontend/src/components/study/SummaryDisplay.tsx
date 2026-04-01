@@ -30,7 +30,7 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({ rawData }) => {
         style={{
           marginTop: 0,
           marginBottom: "16px",
-          fontSize: "26px",
+          fontSize: "24px",
           color: dashboardColors.title,
         }}
       >

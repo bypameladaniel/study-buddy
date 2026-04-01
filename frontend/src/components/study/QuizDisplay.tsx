@@ -81,6 +81,7 @@ const QuizDisplay: React.FC<Props> = ({ rawData }) => {
                 color: dashboardColors.sectionTitle,
                 marginTop: "4px",
                 maxWidth: "800px",
+                fontSize: "16px",
               }}
             >
               {opt}
@@ -100,6 +101,8 @@ const QuizDisplay: React.FC<Props> = ({ rawData }) => {
             width: "100%",
             borderRadius: "8px",
             border: "1px solid #ccc",
+            backgroundColor: "white",
+            color: dashboardColors.sectionTitle,
           }}
         />
       )}
@@ -115,12 +118,13 @@ const QuizDisplay: React.FC<Props> = ({ rawData }) => {
           color: "white",
           border: "none",
           cursor: "pointer",
+          fontSize: "16px",
         }}
       >
         Next Question →
       </button>
 
-      <p style={{ marginTop: "10px", opacity: 0.7 }}>
+      <p style={{ marginTop: "12px", opacity: 0.7 }}>
         Question {currentIndex + 1} / {quiz.questions.length}
       </p>
     </div>
