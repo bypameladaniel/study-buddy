@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { dashboardColors } from "../../styles/colors";
 import { useNavigate } from "react-router-dom";
+import {
+  createSessionId,
+  saveSession,
+} from "../../utils/sessionStorage";
 
 const GenerateStudySessionCard: React.FC = () => {
   const navigate = useNavigate();
@@ -9,16 +13,25 @@ const GenerateStudySessionCard: React.FC = () => {
   const [showError, setShowError] = useState(false);
 
   const handleUpload = () => {
-    if (!text.trim()){
-    setShowError(true);
-    return;
+    if (!text.trim()) {
+      setShowError(true);
+      return;
     }
     setShowError(false);
+
+    const now = Date.now();
+    const session = {
+      id: createSessionId(),
+      title: sessionName.trim() || "Untitled Session",
+      studyMaterial: text,
+      outputs: { summary: "", quiz: "", flashcards: "" },
+      createdAt: now,
+      lastAccessedAt: now,
+    };
+    saveSession(session);
+
     navigate("/study-workspace", {
-      state: {
-        studyMaterial: text,
-        sessionTitle: sessionName || "Untitled Session",
-      },
+      state: { sessionId: session.id },
     });
   };
 
