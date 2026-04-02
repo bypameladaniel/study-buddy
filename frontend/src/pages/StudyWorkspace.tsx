@@ -6,7 +6,7 @@ import {
   generateQuiz,
   generateFlashCards,
 } from "../LLMServices/services/prompts";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getSession, updateSession } from "../utils/sessionStorage";
 import type { StudySession } from "../types/session";
 
@@ -14,6 +14,7 @@ type TabType = "summary" | "quiz" | "flashcards";
 
 const StudyWorkspace: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { sessionId } =
     (location.state as { sessionId?: string }) || {};
 
@@ -25,6 +26,7 @@ const StudyWorkspace: React.FC = () => {
     flashcards: "",
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Load session from localStorage on mount and update lastAccessedAt
   useEffect(() => {
@@ -46,25 +48,33 @@ const StudyWorkspace: React.FC = () => {
     if (!session?.studyMaterial) return;
 
     setLoading(true);
-    let result = "";
+    setError(null);
 
-    if (activeTab === "summary") {
-      result = await generateSummary(session.studyMaterial);
-    } else if (activeTab === "quiz") {
-      result = await generateQuiz(session.studyMaterial);
-    } else if (activeTab === "flashcards") {
-      result = await generateFlashCards(session.studyMaterial);
+    try {
+      let result = "";
+
+      if (activeTab === "summary") {
+        result = await generateSummary(session.studyMaterial);
+      } else if (activeTab === "quiz") {
+        result = await generateQuiz(session.studyMaterial);
+      } else if (activeTab === "flashcards") {
+        result = await generateFlashCards(session.studyMaterial);
+      }
+
+      const updatedOutputs = { ...outputs, [activeTab]: result };
+      setOutputs(updatedOutputs);
+
+      // Persist the generated output back to localStorage
+      if (sessionId) {
+        updateSession(sessionId, { outputs: updatedOutputs });
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Generation failed. Please try again."
+      );
+    } finally {
+      setLoading(false);
     }
-
-    const updatedOutputs = { ...outputs, [activeTab]: result };
-    setOutputs(updatedOutputs);
-
-    // Persist the generated output back to localStorage
-    if (sessionId) {
-      updateSession(sessionId, { outputs: updatedOutputs });
-    }
-
-    setLoading(false);
   };
 
   const getContent = () => {
@@ -117,8 +127,8 @@ const StudyWorkspace: React.FC = () => {
           />
         </div>
 
-        {/* Generate Button */}
-        <div>
+        {/* Actions */}
+        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
           <button
             onClick={handleGenerate}
             disabled={loading}
@@ -130,7 +140,18 @@ const StudyWorkspace: React.FC = () => {
           >
             {loading ? "Generating..." : `Generate ${activeTab}`}
           </button>
+          <button
+            onClick={() => navigate("/mylibrary")}
+            style={styles.doneButton}
+          >
+            Done
+          </button>
         </div>
+
+        {/* Error */}
+        {error && (
+          <p style={styles.errorText}>{error}</p>
+        )}
 
         {/* Output */}
         <div style={styles.contentBox}>
@@ -234,6 +255,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "left",
   },
 
+  errorText: {
+    marginTop: "12px",
+    fontSize: "14px",
+    color: "#c0392b",
+  },
+
   generateButton: {
     justifyContent: "center",
     marginTop: "20px",
@@ -244,5 +271,19 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: workspaceColors.generateButtonBackground,
     border: "none",
     color: "#ffffff",
+    cursor: "pointer",
+  },
+
+  doneButton: {
+    marginTop: "20px",
+    borderRadius: "12px",
+    height: "40px",
+    width: "100px",
+    fontSize: "16px",
+    backgroundColor: dashboardColors.uploadButtonBackground,
+    border: "none",
+    color: dashboardColors.uploadButtonText,
+    cursor: "pointer",
+    fontWeight: 600,
   },
 };
