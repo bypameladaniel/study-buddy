@@ -36,22 +36,29 @@ const StudyWorkspace: React.FC = () => {
 
     setLoading(true);
 
-    let result = "";
+    try {
+      let result = "";
 
-    if (activeTab === "summary") {
-      result = await generateSummary(studyMaterial);
-    } else if (activeTab === "quiz") {
-      result = await generateQuiz(studyMaterial);
-    } else if (activeTab === "flashcards") {
-      result = await generateFlashCards(studyMaterial);
+      if (activeTab === "summary") {
+        result = await generateSummary(studyMaterial);
+      } else if (activeTab === "quiz") {
+        result = await generateQuiz(studyMaterial);
+      } else if (activeTab === "flashcards") {
+        result = await generateFlashCards(studyMaterial);
+      }
+
+      setOutputs((prev) => ({
+        ...prev,
+        [activeTab]: result,
+      }));
+    } catch (err) {
+      setOutputs((prev) => ({
+        ...prev,
+        [activeTab]: "An error occurred while generating. Please try again.",
+      }));
+    } finally {
+      setLoading(false);
     }
-
-    setOutputs((prev) => ({
-      ...prev,
-      [activeTab]: result,
-    }));
-
-    setLoading(false);
   };
 
 
