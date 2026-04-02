@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import type { Flashcard } from "../LLMServices/parsers/flashcardParser";
+import { dashboardColors } from "../styles/colors";
 
 interface FlashcardUIProps {
   flashcards: Flashcard[];
@@ -48,8 +49,8 @@ const FlashcardUI: React.FC<FlashcardUIProps> = ({ flashcards }) => {
           disabled={current === 0}
           style={{
             ...styles.navButton,
-            background: current === 0 ? "#eee" : "#F0BA4A",
-            color: current === 0 ? "#aaa" : "#2B2012",
+            background: current === 0 ? dashboardColors.cancelButtonBackground : dashboardColors.uploadButtonBackground,
+            color: current === 0 ? "#aaa" : dashboardColors.uploadButtonText,
             cursor: current === 0 ? "not-allowed" : "pointer",
           }}
         >
@@ -63,8 +64,8 @@ const FlashcardUI: React.FC<FlashcardUIProps> = ({ flashcards }) => {
           disabled={current === flashcards.length - 1}
           style={{
             ...styles.navButton,
-            background: current === flashcards.length - 1 ? "#eee" : "#F0BA4A",
-            color: current === flashcards.length - 1 ? "#aaa" : "#2B2012",
+            background: current === flashcards.length - 1 ? dashboardColors.cancelButtonBackground : dashboardColors.uploadButtonBackground,
+            color: current === flashcards.length - 1 ? "#aaa" : dashboardColors.uploadButtonText,
             cursor: current === flashcards.length - 1 ? "not-allowed" : "pointer",
           }}
         >
@@ -88,7 +89,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   card: {
     background: "#f8fafc",
-    border: "1px solid #CBDCF4",
+    border: `1px solid ${dashboardColors.cardBorder}`,
     borderRadius: 12,
     boxShadow: "0 2px 16px #0002",
     padding: 40,
@@ -114,8 +115,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "center",
   },
   showButton: {
-    background: "#F0BA4A",
-    color: "#2B2012",
+    background: dashboardColors.uploadButtonBackground,
+    color: dashboardColors.uploadButtonText,
     border: "none",
     borderRadius: 8,
     padding: "12px 32px",
@@ -125,9 +126,9 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   hideButton: {
     marginTop: 12,
-    background: "#f5f5f5",
-    color: "#444",
-    border: "1px solid #CBDCF4",
+    background: dashboardColors.cancelButtonBackground,
+    color: dashboardColors.cancelButtonText,
+    border: `1px solid ${dashboardColors.cancelButtonBorder}`,
     borderRadius: 8,
     padding: "6px 18px",
     fontWeight: 500,
