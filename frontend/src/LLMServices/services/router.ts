@@ -2,7 +2,7 @@ import type { Models } from "./models";
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const API_KEY = import.meta.env.VITE_GROQ_API_KEY;
-const MODEL: Models = "llama-3.3-70b-versatile";
+const MODEL: Models = "moonshotai/kimi-k2-instruct";
 const MAX_TOKENS = 4000;
 
 export interface Message {
