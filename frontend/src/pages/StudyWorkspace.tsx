@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import FlashcardUI from "../components/FlashcardUI";
+import { parseFlashcards } from "../LLMServices/parsers/flashcardParser";
 import Sidebar from "../components/layout/Sidebar";
 import { workspaceColors, dashboardColors } from "../styles/colors";
 import {
@@ -52,6 +54,7 @@ const StudyWorkspace: React.FC = () => {
     setLoading(false);
   };
 
+
   const getContent = () => {
     const current = outputs[activeTab];
 
@@ -62,7 +65,13 @@ const StudyWorkspace: React.FC = () => {
     if (!current) {
       return `Click "Generate" to create a ${activeTab}.`;
     }
-    return current;
+
+    if (activeTab === "flashcards") {
+      const flashcards = parseFlashcards(current);
+      return <FlashcardUI flashcards={flashcards} />;
+    }
+
+    return <span>{current}</span>;
   };
 
   return (
@@ -110,7 +119,7 @@ const StudyWorkspace: React.FC = () => {
 
         {/* Output */}
         <div style={styles.contentBox}>
-          <p style={styles.contentText}>{getContent()}</p>
+          {getContent()}
         </div>
       </div>
     </div>
