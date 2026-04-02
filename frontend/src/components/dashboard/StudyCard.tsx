@@ -1,12 +1,25 @@
 import React from "react";
 import { dashboardColors } from "../../styles/colors";
+import { useNavigate } from "react-router-dom";
+import type { StudySession } from "../../types/session";
+import { formatLastAccessed } from "../../utils/sessionStorage";
 
-const StudyCard: React.FC = () => {
+interface StudyCardProps {
+  session: StudySession;
+}
+
+const StudyCard: React.FC<StudyCardProps> = ({ session }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/study-workspace", { state: { sessionId: session.id } });
+  };
+
   return (
-    // mock text, to be replaced 
     <button
       type="button"
       style={styles.studyCard}
+      onClick={handleClick}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-4px)";
         e.currentTarget.style.boxShadow = "0 12px 24px rgba(0,0,0,0.08)";
@@ -16,10 +29,10 @@ const StudyCard: React.FC = () => {
         e.currentTarget.style.boxShadow = styles.studyCard.boxShadow!;
       }}
     >
-      <p style={styles.studyTitle}>
-        SOEN 357 - Lecture 4: UX Design Process
+      <p style={styles.studyTitle}>{session.title}</p>
+      <p style={styles.studySubtitle}>
+        Last accessed: {formatLastAccessed(session.lastAccessedAt)}
       </p>
-      <p style={styles.studySubtitle}>Last accessed: Today</p>
     </button>
   );
 };
