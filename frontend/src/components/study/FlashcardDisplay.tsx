@@ -1,18 +1,19 @@
-import React, { useState } from "react";
-import type { Flashcard } from "../LLMServices/parsers/flashcardParser";
-import { dashboardColors } from "../styles/colors";
 
-interface FlashcardUIProps {
-  flashcards: Flashcard[];
+import React, { useState, useMemo } from "react";
+import { parseFlashcards } from "../../LLMServices/parsers/flashcardParser";
+import { dashboardColors } from "../../styles/colors";
+
+interface FlashcardDisplayProps {
+  rawData: string;
 }
 
-
-const FlashcardUI: React.FC<FlashcardUIProps> = ({ flashcards }) => {
+const FlashcardDisplay: React.FC<FlashcardDisplayProps> = ({ rawData }) => {
+  const flashcards = useMemo(() => parseFlashcards(rawData), [rawData]);
   const [current, setCurrent] = useState(0);
   const [revealed, setRevealed] = useState(false);
 
   if (!flashcards.length) {
-    return <div>No flashcards to display.</div>;
+    return <div style={{ color: dashboardColors.sectionTitle }}>No flashcards to display.</div>;
   }
 
   const card = flashcards[current];
@@ -33,7 +34,20 @@ const FlashcardUI: React.FC<FlashcardUIProps> = ({ flashcards }) => {
         {revealed ? (
           <div style={styles.answer}>{card.answer}</div>
         ) : (
-          <button style={styles.showButton} onClick={() => setRevealed(true)}>
+          <button
+            style={{
+              ...styles.showButton,
+              backgroundColor: dashboardColors.title,
+              color: "white",
+              border: "none",
+              borderRadius: "10px",
+              fontSize: "16px",
+              padding: "10px 16px",
+              marginTop: "20px",
+              cursor: "pointer",
+            }}
+            onClick={() => setRevealed(true)}
+          >
             Show Answer
           </button>
         )}
@@ -49,9 +63,14 @@ const FlashcardUI: React.FC<FlashcardUIProps> = ({ flashcards }) => {
           disabled={current === 0}
           style={{
             ...styles.navButton,
-            background: current === 0 ? dashboardColors.cancelButtonBackground : dashboardColors.uploadButtonBackground,
-            color: current === 0 ? "#aaa" : dashboardColors.uploadButtonText,
+            backgroundColor: dashboardColors.title,
+            color: "white",
+            border: "none",
+            borderRadius: "10px",
+            fontSize: "16px",
+            padding: "10px 16px",
             cursor: current === 0 ? "not-allowed" : "pointer",
+            opacity: current === 0 ? 0.6 : 1,
           }}
         >
           ← Prev
@@ -64,9 +83,14 @@ const FlashcardUI: React.FC<FlashcardUIProps> = ({ flashcards }) => {
           disabled={current === flashcards.length - 1}
           style={{
             ...styles.navButton,
-            background: current === flashcards.length - 1 ? dashboardColors.cancelButtonBackground : dashboardColors.uploadButtonBackground,
-            color: current === flashcards.length - 1 ? "#aaa" : dashboardColors.uploadButtonText,
+            backgroundColor: dashboardColors.title,
+            color: "white",
+            border: "none",
+            borderRadius: "10px",
+            fontSize: "16px",
+            padding: "10px 16px",
             cursor: current === flashcards.length - 1 ? "not-allowed" : "pointer",
+            opacity: current === flashcards.length - 1 ? 0.6 : 1,
           }}
         >
           Next →
@@ -114,16 +138,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: 18,
     textAlign: "center",
   },
-  showButton: {
-    background: dashboardColors.uploadButtonBackground,
-    color: dashboardColors.uploadButtonText,
-    border: "none",
-    borderRadius: 8,
-    padding: "12px 32px",
-    fontWeight: 600,
-    cursor: "pointer",
-    fontSize: 17,
-  },
   hideButton: {
     marginTop: 12,
     background: dashboardColors.cancelButtonBackground,
@@ -154,4 +168,4 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-export default FlashcardUI;
+export default FlashcardDisplay;

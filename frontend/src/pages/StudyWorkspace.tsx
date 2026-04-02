@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import FlashcardUI from "../components/FlashcardUI";
-import { parseFlashcards } from "../LLMServices/parsers/flashcardParser";
 import Sidebar from "../components/layout/Sidebar";
 import { workspaceColors, dashboardColors } from "../styles/colors";
 import {
@@ -13,6 +11,7 @@ import { useLocation } from "react-router-dom";
 import KeyPointsDisplay from "../components/study/KeyPointsDisplay";
 import SummaryDisplay from "../components/study/SummaryDisplay";
 import QuizDisplay from "../components/study/QuizDisplay";
+import FlashcardDisplay from "../components/study/FlashcardDisplay";
 
 type TabType = "summary" | "quiz" | "flashcards" | "keypoints";
 
@@ -53,6 +52,13 @@ const StudyWorkspace: React.FC = () => {
     } else if (activeTab === "keypoints") {
       result = await generateKeyPoints(studyMaterial);
     }
+
+    setOutputs((prev) => ({
+      ...prev,
+      [activeTab]: result,
+    }));
+
+    setLoading(false);
   };
 
   return (
@@ -122,6 +128,8 @@ const StudyWorkspace: React.FC = () => {
             <KeyPointsDisplay rawData={outputs.keypoints} />
           ) : activeTab === "quiz" ? (
             <QuizDisplay rawData={outputs.quiz} />
+          ) : activeTab === "flashcards" ? (
+            <FlashcardDisplay rawData={outputs.flashcards} />
           ) : (
             <p style={styles.contentText}>{outputs[activeTab]}</p>
           )}
