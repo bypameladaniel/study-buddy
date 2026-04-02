@@ -5,10 +5,14 @@ import {
   generateSummary,
   generateQuiz,
   generateFlashCards,
+  generateKeyPoints,
 } from "../LLMServices/services/prompts";
 import { useLocation } from "react-router-dom";
+import KeyPointsDisplay from "../components/study/KeyPointsDisplay";
+import SummaryDisplay from "../components/study/SummaryDisplay";
+import QuizDisplay from "../components/study/QuizDisplay";
 
-type TabType = "summary" | "quiz" | "flashcards";
+type TabType = "summary" | "quiz" | "flashcards" | "keypoints";
 
 const StudyWorkspace: React.FC = () => {
   const location = useLocation();
@@ -25,9 +29,11 @@ const StudyWorkspace: React.FC = () => {
     summary: "",
     quiz: "",
     flashcards: "",
+    keypoints: "",
   });
 
   const [loading, setLoading] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleGenerate = async () => {
     if (!studyMaterial) return;
@@ -42,6 +48,8 @@ const StudyWorkspace: React.FC = () => {
       result = await generateQuiz(studyMaterial);
     } else if (activeTab === "flashcards") {
       result = await generateFlashCards(studyMaterial);
+    } else if (activeTab === "keypoints") {
+      result = await generateKeyPoints(studyMaterial);
     }
 
     setOutputs((prev) => ({
@@ -50,19 +58,6 @@ const StudyWorkspace: React.FC = () => {
     }));
 
     setLoading(false);
-  };
-
-  const getContent = () => {
-    const current = outputs[activeTab];
-
-    if (loading) {
-      return `Generating ${activeTab}...`;
-    }
-
-    if (!current) {
-      return `Click "Generate" to create a ${activeTab}.`;
-    }
-    return current;
   };
 
   return (
@@ -82,6 +77,11 @@ const StudyWorkspace: React.FC = () => {
             onClick={() => setActiveTab("summary")}
           />
           <TabButton
+            label="Key Points"
+            active={activeTab === "keypoints"}
+            onClick={() => setActiveTab("keypoints")}
+          />
+          <TabButton
             label="Quiz"
             active={activeTab === "quiz"}
             onClick={() => setActiveTab("quiz")}
@@ -94,7 +94,7 @@ const StudyWorkspace: React.FC = () => {
         </div>
 
         {/* Generate Button */}
-        <div >
+        <div>
           <button
             onClick={handleGenerate}
             disabled={loading}
@@ -109,11 +109,37 @@ const StudyWorkspace: React.FC = () => {
         </div>
 
         {/* Output */}
-        <div style={styles.contentBox}>
-          <p style={styles.contentText}>{getContent()}</p>
+        <div
+          style={{
+          ...styles.contentBox,
+          height: isExpanded ? "60vh" : "400px",
+        }}
+>
+          {loading ? (
+            <p style={styles.contentText}>Generating {activeTab}...</p>
+          ) : !outputs[activeTab] ? (
+            <p style={styles.contentText}>
+              Click "Generate" to create a {activeTab}.
+            </p>
+          ) : activeTab === "summary" ? (
+            <SummaryDisplay rawData={outputs.summary} />
+          ) : activeTab === "keypoints" ? (
+            <KeyPointsDisplay rawData={outputs.keypoints} />
+          ) : activeTab === "quiz" ? (
+            <QuizDisplay rawData={outputs.quiz} />
+          ) : (
+            <p style={styles.contentText}>{outputs[activeTab]}</p>
+          )}
         </div>
+        <button
+          onClick={() => setIsExpanded((prev) => !prev)}
+          style={styles.expandButton}
+        >
+          {isExpanded ? "Collapse" : "Expand"}
+        </button>
       </div>
     </div>
+    
   );
 };
 
@@ -192,16 +218,18 @@ const TabButton: React.FC<TabProps> = ({ label, active, onClick }) => {
   
     contentBox: {
       marginTop: "30px",
-      border: `1px solid ${dashboardColors.cardBorder}`, 
+      border: `1px solid ${dashboardColors.cardBorder}`,
       borderRadius: "16px",
       height: "400px",
+      maxHeight: "80vh",
       display: "flex",
       justifyContent: "flex-start",
       alignItems: "flex-start",
-      backgroundColor: dashboardColors.cardBackground, 
+      backgroundColor: dashboardColors.cardBackground,
       boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
       padding: "20px",
       overflowY: "auto",
+      transition: "height 0.3s ease",
     },
   
     contentText: {
@@ -219,5 +247,14 @@ const TabButton: React.FC<TabProps> = ({ label, active, onClick }) => {
       width: "170px",
       fontSize: "16px",
       backgroundColor: workspaceColors.generateButtonBackground,
+    },
+    expandButton: {
+      marginTop: "20px",
+      padding: "8px 14px",
+      borderRadius: "10px",
+      border: "none",
+      cursor: "pointer",
+      backgroundColor: workspaceColors.generateButtonBackground,
+      fontWeight: 600,
     },
   };

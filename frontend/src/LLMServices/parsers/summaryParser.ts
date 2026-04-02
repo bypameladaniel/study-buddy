@@ -1,5 +1,3 @@
-
-
 export interface SummarySection {
   heading: string;
   content: string;
