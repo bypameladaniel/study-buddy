@@ -1,11 +1,25 @@
 import React from "react";
 import { StudySessionColors } from "../../styles/colors";
+import { useNavigate } from "react-router-dom";
+import type { StudySession } from "../../types/session";
+import { formatLastAccessed } from "../../utils/sessionStorage";
 
-const StudyCard: React.FC = () => {
+interface StudyCardProps {
+  session: StudySession;
+}
+
+const StudyCard: React.FC<StudyCardProps> = ({ session }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/study-workspace", { state: { sessionId: session.id } });
+  };
+
   return (
     <button
       type="button"
       style={styles.studyCard}
+      onClick={handleClick}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-3px)";
         e.currentTarget.style.boxShadow = StudySessionColors.shadowLg;
@@ -17,8 +31,10 @@ const StudyCard: React.FC = () => {
         e.currentTarget.style.borderColor = StudySessionColors.studyCardBorder;
       }}
     >
-      <p style={styles.studyTitle}>SOEN 357 — Lecture 4: UX design process</p>
-      <p style={styles.studySubtitle}>Last accessed · Today</p>
+      <p style={styles.studyTitle}>{session.title}</p>
+      <p style={styles.studySubtitle}>
+        Last accessed · {formatLastAccessed(session.lastAccessedAt)}
+      </p>
     </button>
   );
 };
