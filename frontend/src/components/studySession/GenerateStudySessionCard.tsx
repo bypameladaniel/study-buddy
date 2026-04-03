@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 import { StudySessionColors } from "../../styles/colors";
 import { useNavigate } from "react-router-dom";
+import { createSessionId, saveSession } from "../../utils/sessionStorage";
+import type { StudySession } from "../../types/session";
 
 const GenerateStudySessionCard: React.FC = () => {
   const navigate = useNavigate();
@@ -57,11 +59,21 @@ const GenerateStudySessionCard: React.FC = () => {
     }
 
     setShowError(false);
+
+    const now = Date.now();
+    const session: StudySession = {
+      id: createSessionId(),
+      title: sessionName.trim() || "Untitled Session",
+      studyMaterial: text,
+      outputs: { summary: "", quiz: "", flashcards: "", keypoints: "" },
+      createdAt: now,
+      lastAccessedAt: now,
+      isCompleted: false,
+    };
+    saveSession(session);
+
     navigate("/study-workspace", {
-      state: {
-        studyMaterial: text,
-        sessionTitle: sessionName || "Untitled Session",
-      },
+      state: { sessionId: session.id },
     });
   };
 
