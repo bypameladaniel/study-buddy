@@ -1,9 +1,10 @@
 import Sidebar from "../components/layout/Sidebar";
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { dashboardColors, workspaceColors } from "../styles/colors";
+import { dashboardColors } from "../styles/colors";
 import { useUserProfile } from "../hooks/useUserProfile";
-import mockProfile from "../assets/default-pfp.jpeg";
+import editPencil from "../assets/edit-pencil.svg";
+import defaultProfilePhoto from "../assets/default-pfp.jpeg";
 import { auth } from "../config/firebase";
 import { deleteUser } from "firebase/auth";
 
@@ -67,6 +68,13 @@ const Profile: React.FC = () => {
 
   const displayName = [profile?.firstName, profile?.lastName].filter(Boolean).join(" ");
   const deletePhraseOk = deletePhrase.trim() === DELETE_PHRASE;
+
+  const scrollToNameEditor = () => {
+    document.getElementById("profile-name-section")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -159,26 +167,64 @@ const Profile: React.FC = () => {
 
           <div style={styles.stack}>
             <div style={styles.upperGrid}>
-              <section style={styles.panelGrow} aria-labelledby="profile-identity-heading">
-                <div style={styles.identityRow}>
-                  <div style={styles.avatarContainer}>
-                    <img src={mockProfile} alt="" style={styles.avatarImage} />
+              <section
+                style={styles.identityPanel}
+                aria-labelledby="profile-identity-heading"
+              >
+                <div style={styles.identityCardColumn}>
+                  <div style={styles.avatarWrap}>
+                    <div style={styles.avatarPhotoRing}>
+                      <img
+                        src={defaultProfilePhoto}
+                        alt=""
+                        style={styles.avatarPhoto}
+                        decoding="async"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      style={styles.avatarEditFab}
+                      onClick={scrollToNameEditor}
+                      title="Edit name in the panel beside this card"
+                      aria-label="Edit name"
+                    >
+                      <img
+                        src={editPencil}
+                        alt=""
+                        style={styles.avatarEditIcon}
+                      />
+                    </button>
                   </div>
-                  <div style={styles.identityText}>
-                    <h2 id="profile-identity-heading" style={styles.panelTitle}>
-                      {displayName || "Your profile"}
-                    </h2>
-                    {profile?.email ? (
-                      <p style={styles.identityEmail}>{profile.email}</p>
-                    ) : null}
-                    <p style={styles.avatarHint}>
-                      Photo and email come from your sign-in provider. You can change how your name appears in the panel beside this one.
-                    </p>
+
+                  <h2 id="profile-identity-heading" style={styles.identityName}>
+                    {displayName || "Your name"}
+                  </h2>
+                  <p style={styles.identityTagline}>StudyBuddy student profile</p>
+
+                  <div style={styles.accountInset}>
+                    <p style={styles.accountInsetTitle}>Account</p>
+                    <div style={styles.accountField}>
+                      <span style={styles.accountFieldLabel}>Email</span>
+                      <span style={styles.accountFieldValue}>
+                        {profile?.email || "—"}
+                      </span>
+                    </div>
+                    <div style={{ ...styles.accountField, marginBottom: 0 }}>
+                      <span style={styles.accountFieldLabel}>Status</span>
+                      <span style={styles.statusPill}>
+                        <span style={styles.statusDot} aria-hidden />
+                        Active
+                      </span>
+                    </div>
                   </div>
                 </div>
               </section>
 
-              <section style={styles.panelGrow} aria-labelledby="profile-details-heading">
+              <section
+                id="profile-name-section"
+                style={styles.detailsPanel}
+                aria-labelledby="profile-details-heading"
+              >
                 <h2 id="profile-details-heading" style={styles.sectionHeading}>
                   Name on Study Buddy
                 </h2>
@@ -294,23 +340,13 @@ const Profile: React.FC = () => {
                     </button>
                   </div>
                 </form>
-              </section>
-            </div>
 
-            <section style={styles.dangerPanel} aria-labelledby="profile-danger-heading">
-              <div style={styles.dangerPanelInner}>
-                <div>
-                  <h2 id="profile-danger-heading" style={styles.dangerTitle}>
-                    Delete account
-                  </h2>
-                  <p style={styles.dangerCopy}>
-                    Permanently delete this Study Buddy account. You will need to sign up again to use the app.
-                  </p>
-                </div>
+                <div style={styles.detailsDeleteSeparator} aria-hidden />
+
                 <button
                   type="button"
                   disabled={saving}
-                  style={styles.deleteButton}
+                  style={styles.deleteButtonCorner}
                   onClick={openDeleteModal}
                   onMouseOver={(e) => {
                     if (!saving) {
@@ -325,8 +361,8 @@ const Profile: React.FC = () => {
                 >
                   Delete account
                 </button>
-              </div>
-            </section>
+              </section>
+            </div>
           </div>
         </div>
       </main>
@@ -453,67 +489,152 @@ const styles: { [key: string]: React.CSSProperties } = {
     gap: 28,
     alignItems: "stretch",
   },
-  panelGrow: {
+  detailsPanel: {
     background: dashboardColors.cardBackground,
     borderRadius: 20,
     border: `1px solid ${dashboardColors.cardBorder}`,
     boxShadow: dashboardColors.shadowMd,
-    padding: "32px 34px",
+    padding: "32px 34px 56px",
     boxSizing: "border-box",
     flex: "1 1 380px",
     minWidth: "min(100%, 320px)",
+    position: "relative" as const,
   },
-  identityRow: {
+  identityPanel: {
+    background: dashboardColors.cardBackground,
+    borderRadius: 24,
+    border: `1px solid ${dashboardColors.cardBorder}`,
+    boxShadow: dashboardColors.shadowMd,
+    padding: "36px 28px 32px",
+    boxSizing: "border-box",
+    flex: "0 1 380px",
+    maxWidth: 400,
+    minWidth: "min(100%, 280px)",
+  },
+  identityCardColumn: {
     display: "flex",
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 26,
-    flexWrap: "wrap",
+    flexDirection: "column",
+    alignItems: "center",
+    textAlign: "center",
   },
-  identityText: {
-    flex: "1 1 220px",
-    minWidth: 0,
-    textAlign: "left",
+  avatarWrap: {
+    position: "relative",
+    width: 124,
+    height: 124,
+    marginBottom: 22,
+    flexShrink: 0,
   },
-  panelTitle: {
+  avatarPhotoRing: {
+    width: 124,
+    height: 124,
+    borderRadius: "50%",
+    overflow: "hidden",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: "#e8ecf0",
+    boxShadow: "0 10px 32px rgba(0, 122, 255, 0.22)",
+    border: `3px solid ${dashboardColors.cardBackground}`,
+  },
+  avatarPhoto: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover" as const,
+    objectPosition: "center" as const,
+    display: "block",
+  },
+  avatarEditFab: {
+    position: "absolute",
+    right: -2,
+    bottom: -2,
+    width: 36,
+    height: 36,
+    borderRadius: "50%",
+    background: "#1d1d1f",
+    border: "3px solid #ffffff",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    padding: 0,
+    boxShadow: dashboardColors.shadowSm,
+  },
+  avatarEditIcon: {
+    width: 18,
+    height: 18,
+    objectFit: "contain" as const,
+    filter: "brightness(0) invert(1)",
+  },
+  identityName: {
     margin: 0,
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: 700,
     color: dashboardColors.title,
     letterSpacing: "-0.02em",
     lineHeight: 1.25,
     wordBreak: "break-word",
+    maxWidth: "100%",
   },
-  identityEmail: {
+  identityTagline: {
     margin: "8px 0 0 0",
-    fontSize: 15,
-    color: dashboardColors.subtitle,
-    wordBreak: "break-all",
-  },
-  avatarContainer: {
-    width: 112,
-    height: 112,
-    borderRadius: "50%",
-    background: workspaceColors.tabBackground,
-    overflow: "hidden",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    border: `2px solid ${dashboardColors.cardBorder}`,
-    flexShrink: 0,
-    boxShadow: dashboardColors.shadowSm,
-  },
-  avatarImage: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  },
-  avatarHint: {
-    margin: "14px 0 0 0",
     fontSize: 14,
-    color: dashboardColors.studySubtitle,
-    lineHeight: 1.55,
-    maxWidth: 520,
+    color: dashboardColors.subtitle,
+    lineHeight: 1.45,
+  },
+  accountInset: {
+    width: "100%",
+    marginTop: 26,
+    padding: "18px 18px 16px",
+    background: "#f5f5f7",
+    borderRadius: 16,
+    border: "1px solid rgba(0, 0, 0, 0.06)",
+    textAlign: "left" as const,
+    boxSizing: "border-box" as const,
+  },
+  accountInsetTitle: {
+    margin: "0 0 14px 0",
+    fontSize: 11,
+    fontWeight: 700,
+    letterSpacing: "0.14em",
+    textTransform: "uppercase" as const,
+    color: "#5a7a9a",
+  },
+  accountField: {
+    marginBottom: 14,
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: 4,
+  },
+  accountFieldLabel: {
+    fontSize: 12,
+    color: "#86868b",
+    fontWeight: 500,
+  },
+  accountFieldValue: {
+    fontSize: 15,
+    color: dashboardColors.title,
+    fontWeight: 500,
+    wordBreak: "break-all" as const,
+  },
+  statusPill: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+    alignSelf: "flex-start",
+    marginTop: 2,
+    padding: "6px 14px",
+    borderRadius: 999,
+    background: "#e8f4ff",
+    color: "#007aff",
+    fontSize: 14,
+    fontWeight: 600,
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: "50%",
+    background: "#007aff",
+    flexShrink: 0,
   },
   sectionHeading: {
     margin: 0,
@@ -632,46 +753,27 @@ const styles: { [key: string]: React.CSSProperties } = {
     opacity: 0.45,
     cursor: "not-allowed",
   },
-  dangerPanel: {
-    background: dashboardColors.deleteButtonBackground,
-    borderRadius: 20,
-    border: `1px solid ${dashboardColors.deleteButtonBorder}`,
-    boxShadow: dashboardColors.shadowSm,
-    padding: "28px 34px",
-    boxSizing: "border-box",
+  detailsDeleteSeparator: {
+    width: "100%",
+    marginTop: 24,
+    marginBottom: 0,
+    border: "none",
+    borderTop: `1px solid ${dashboardColors.cardBorder}`,
+    boxSizing: "border-box" as const,
   },
-  dangerPanelInner: {
-    display: "flex",
-    flexWrap: "wrap",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 20,
-  },
-  dangerTitle: {
-    margin: 0,
-    fontSize: 19,
-    fontWeight: 700,
-    color: dashboardColors.deleteButtonText,
-    letterSpacing: "-0.02em",
-  },
-  dangerCopy: {
-    margin: "8px 0 0 0",
-    fontSize: 15,
-    color: dashboardColors.subtitle,
-    lineHeight: 1.55,
-    maxWidth: 640,
-  },
-  deleteButton: {
+  deleteButtonCorner: {
+    position: "absolute" as const,
+    right: 28,
+    bottom: 24,
     background: "#fff",
     color: dashboardColors.deleteButtonText,
     border: `1px solid ${dashboardColors.deleteButtonBorder}`,
     borderRadius: 10,
-    padding: "12px 20px",
+    padding: "10px 16px",
     fontWeight: 600,
-    fontSize: 15,
+    fontSize: 14,
     cursor: "pointer",
     transition: "background 0.15s ease",
-    flexShrink: 0,
   },
   modalRoot: {
     position: "fixed",
