@@ -39,7 +39,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   contentWrap: {
     width: "100%",
-    maxWidth: "min(1300px, 100%)",
-    margin: "0 auto",  
+    maxWidth: "min(1100px, 100%)",
+    margin: "0 auto",
   },
 };
