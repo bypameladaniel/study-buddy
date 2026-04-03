@@ -3,49 +3,53 @@ import { dashboardColors } from "../../styles/colors";
 
 const StudyCard: React.FC = () => {
   return (
-    // mock text, to be replaced 
     <button
       type="button"
       style={styles.studyCard}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-4px)";
-        e.currentTarget.style.boxShadow = "0 12px 24px rgba(0,0,0,0.08)";
+        e.currentTarget.style.transform = "translateY(-3px)";
+        e.currentTarget.style.boxShadow = dashboardColors.shadowLg;
+        e.currentTarget.style.borderColor = "#7eb5ff";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = "translateY(0)";
-        e.currentTarget.style.boxShadow = styles.studyCard.boxShadow!;
+        e.currentTarget.style.boxShadow = dashboardColors.shadowSm;
+        e.currentTarget.style.borderColor = dashboardColors.studyCardBorder;
       }}
     >
-      <p style={styles.studyTitle}>
-        SOEN 357 - Lecture 4: UX Design Process
-      </p>
-      <p style={styles.studySubtitle}>Last accessed: Today</p>
+      <p style={styles.studyTitle}>SOEN 357 — Lecture 4: UX design process</p>
+      <p style={styles.studySubtitle}>Last accessed · Today</p>
     </button>
   );
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
   studyCard: {
-    flex: 1,
+    flex: "1 1 260px",
+    minWidth: 0,
     width: "100%",
+    maxWidth: "100%",
     backgroundColor: dashboardColors.studyCardBackground,
-    border: `2px solid ${dashboardColors.studyCardBorder}`,
-    padding: "18px",
-    borderRadius: "14px",
+    border: `1px solid ${dashboardColors.studyCardBorder}`,
+    padding: "20px 18px",
+    borderRadius: 14,
     textAlign: "left",
     cursor: "pointer",
     font: "inherit",
-    transition: "all 0.2s ease",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
+    transition: "transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease",
+    boxShadow: dashboardColors.shadowSm,
   },
   studyTitle: {
-    fontSize: "18px",
-    marginBottom: "8px",
+    fontSize: 17,
+    margin: "0 0 8px 0",
     color: dashboardColors.studyTitle,
     fontWeight: 600,
+    letterSpacing: "-0.01em",
+    lineHeight: 1.35,
   },
   studySubtitle: {
-    fontSize: "13px",
+    fontSize: 13,
+    margin: 0,
     color: dashboardColors.studySubtitle,
   },
 };

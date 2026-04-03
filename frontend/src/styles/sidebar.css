@@ -1,96 +1,144 @@
-/* Style for the logout icon */
-.sidebar__logout-icon {
-  width: 20px;
-  height: 20px;
-  vertical-align: middle;
-  margin-right: 8px;
-  fill: #e53e3e;
-  font-weight: 700;
-}
 .sidebar {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 280px;
-  height: 100vh;
-  background: #fff;
-  border-right: 1px solid #e5e7eb;
-  padding: 32px 16px 16px 16px;
+  width: 260px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: linear-gradient(180deg, #ffffff 0%, #f5f7fa 100%);
+  border-right: 1px solid #d2d2d7;
+  padding: 24px 14px 20px;
   box-sizing: border-box;
-  font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
-  align-items: center;
-  text-align: center;
+  font-family: var(--app-font, "DM Sans", system-ui, sans-serif);
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  box-shadow: 4px 0 24px rgba(0, 55, 90, 0.04);
 }
 
 .sidebar__top {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
+  width: 100%;
 }
 
 .sidebar__logo {
-  width: 240px;
-  margin-bottom: 40px;
-  background: none;
+  width: 100%;
+  max-width: 168px;
+  height: auto;
+  margin: 0 auto 32px;
   display: block;
+  object-fit: contain;
 }
 
 .sidebar__nav {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 6px;
   width: 100%;
-  align-items: center;
 }
 
 .sidebar__button {
-  background: none;
+  background: transparent;
   border: none;
-  color: #222;
-  font-size: 1.1rem;
-  text-align: center;
-  padding: 10px 0;
+  color: #424245;
+  font-size: 0.9375rem;
+  text-align: left;
+  padding: 11px 14px;
   cursor: pointer;
   width: 100%;
-  border-radius: 8px;
-  transition: background 0.15s;
-  font-weight: 700;
+  border-radius: 10px;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+  font-weight: 600;
+  font-family: inherit;
 }
 
-.sidebar__button:hover, .sidebar__button:focus {
-  background: #e3efff;
-  color: #222;
+.sidebar__button:hover,
+.sidebar__button:focus-visible {
+  background: #ebebed;
+  color: #1d1d1f;
+  outline: none;
 }
 
-/* Keep logout button hover unchanged */
-.sidebar__logout:hover, .sidebar__logout:focus {
-  background: #f0f4f8;
-  color: #e53e3e;
+.sidebar__button:focus-visible {
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px rgba(0, 122, 255, 0.35);
+}
+
+.sidebar__button--active {
+  background: #e5f1ff;
+  color: #0071e3;
+}
+
+.sidebar__button--active:hover,
+.sidebar__button--active:focus-visible {
+  background: #d9ebff;
+  color: #0066db;
 }
 
 .sidebar__new-session {
-  color: #fff;
-  background: #4f8cff;
-  margin-bottom: 16px;
-  font-weight: 700;
-  border-radius: 8px;
-  padding: 12px 0;
-  transition: background 0.15s;
+  color: #ffffff;
+  background: linear-gradient(180deg, #0a84ff 0%, #007aff 100%);
+  margin-bottom: 10px;
+  text-align: center;
+  padding: 12px 14px;
+  box-shadow: 0 4px 16px rgba(0, 122, 255, 0.35);
 }
 
-.sidebar__new-session:hover, .sidebar__new-session:focus {
-  background: #357ae8;
-  color: #fff;
+.sidebar__new-session:hover,
+.sidebar__new-session:focus-visible {
+  background: linear-gradient(180deg, #007aff 0%, #0066db 100%);
+  color: #ffffff;
+  box-shadow: 0 6px 22px rgba(0, 122, 255, 0.4);
+}
+
+.sidebar__new-session--active {
+  box-shadow:
+    0 0 0 2px #ffffff,
+    0 0 0 4px rgba(0, 122, 255, 0.45),
+    0 4px 16px rgba(0, 122, 255, 0.35);
 }
 
 .sidebar__bottom {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid #d2d2d7;
+  margin-top: auto;
 }
 
 .sidebar__logout {
-  color: #e53e3e;
-  font-weight: 500;
-  margin-top: 24px;
+  color: #d70015;
+  font-weight: 600;
+  justify-content: center;
+  text-align: center;
+}
+
+.sidebar__logout:hover,
+.sidebar__logout:focus-visible {
+  background: #fff0f0;
+  color: #b50012;
+}
+
+.sidebar__logout-icon {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 220px;
+    padding: 20px 10px 16px;
+  }
+
+  .sidebar__logo {
+    max-width: 140px;
+    margin-bottom: 24px;
+  }
 }

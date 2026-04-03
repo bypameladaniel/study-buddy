@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../../config/firebase";
 import logo from "../../assets/logo.png";
@@ -8,6 +8,7 @@ import "../../styles/sidebar.css";
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const handleNewSession = () => {
     navigate("/dashboard");
@@ -31,9 +32,29 @@ const Sidebar: React.FC = () => {
       <div className="sidebar__top">
         <img src={logo} alt="Logo" className="sidebar__logo" />
         <nav className="sidebar__nav">
-          <button className="sidebar__button sidebar__new-session" onClick={handleNewSession}>+ New Session</button>
-          <button className="sidebar__button" onClick={handleMyLibrary}>My Library</button>
-          <button className="sidebar__button" onClick={handleProfile}>Profile</button>
+          <button
+            type="button"
+            className={`sidebar__button sidebar__new-session${
+              pathname === "/dashboard" ? " sidebar__new-session--active" : ""
+            }`}
+            onClick={handleNewSession}
+          >
+            + New session
+          </button>
+          <button
+            type="button"
+            className={`sidebar__button${pathname === "/mylibrary" ? " sidebar__button--active" : ""}`}
+            onClick={handleMyLibrary}
+          >
+            My Library
+          </button>
+          <button
+            type="button"
+            className={`sidebar__button${pathname === "/profile" ? " sidebar__button--active" : ""}`}
+            onClick={handleProfile}
+          >
+            Profile
+          </button>
         </nav>
       </div>
       <div className="sidebar__bottom">

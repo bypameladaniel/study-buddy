@@ -12,10 +12,229 @@ import KeyPointsDisplay from "../components/study/KeyPointsDisplay";
 import SummaryDisplay from "../components/study/SummaryDisplay";
 import QuizDisplay from "../components/study/QuizDisplay";
 import FlashcardDisplay from "../components/study/FlashcardDisplay";
-import expandIcon from "../assets/expand.png";
-import collapseIcon from "../assets/collapse.png";
 
 type TabType = "summary" | "quiz" | "flashcards" | "keypoints";
+
+/** Matches the original compact empty / loading panel */
+const COMPACT_BOX_PX = 400;
+
+const styles = {
+  page: {
+    display: "flex" as const,
+    alignItems: "stretch" as const,
+    minHeight: "100dvh" as const,
+    width: "100%",
+    minWidth: 0,
+    fontFamily: '"DM Sans", system-ui, sans-serif',
+    backgroundColor: dashboardColors.pageBackground,
+    backgroundImage: `linear-gradient(180deg, ${dashboardColors.pageGradientStart} 0%, ${dashboardColors.pageGradientEnd} 100%)`,
+  },
+  relative: (compact: boolean) =>
+    compact
+      ? ({
+          position: "relative" as const,
+          flex: 1,
+          minHeight: 0,
+          display: "flex" as const,
+          flexDirection: "column" as const,
+        } as const)
+      : ({
+          position: "relative" as const,
+          flex: "none" as const,
+          display: "block" as const,
+        } as const),
+  contentBox: (compact: boolean, centerEmpty: boolean) =>
+    compact
+      ? {
+          position: "relative" as const,
+          width: "100%",
+          height: COMPACT_BOX_PX,
+          minHeight: COMPACT_BOX_PX,
+          maxHeight: COMPACT_BOX_PX,
+          marginTop: 24,
+          border: `1px solid ${dashboardColors.cardBorder}`,
+          borderRadius: 16,
+          background: `linear-gradient(145deg, ${workspaceColors.contentGradientStart} 0%, ${workspaceColors.contentGradientEnd} 100%)`,
+          boxShadow: dashboardColors.shadowLg,
+          display: "flex" as const,
+          flexDirection: "column" as const,
+          alignItems: centerEmpty ? ("center" as const) : ("stretch" as const),
+          justifyContent: centerEmpty ? ("center" as const) : ("flex-start" as const),
+          padding: 20,
+          overflow: "hidden" as const,
+          boxSizing: "border-box" as const,
+          flexShrink: 0,
+        }
+      : {
+          position: "relative" as const,
+          width: "100%",
+          marginTop: 24,
+          border: `1px solid ${dashboardColors.cardBorder}`,
+          borderRadius: 16,
+          background: `linear-gradient(145deg, ${workspaceColors.contentGradientStart} 0%, ${workspaceColors.contentGradientEnd} 100%)`,
+          boxShadow: dashboardColors.shadowLg,
+          display: "flex" as const,
+          flexDirection: "column" as const,
+          alignItems: "stretch" as const,
+          justifyContent: "flex-start" as const,
+          padding: 20,
+          overflow: "visible" as const,
+          boxSizing: "border-box" as const,
+          minHeight: "min-content" as const,
+        },
+  generateButtonDynamic: (loading: boolean) => ({
+    backgroundColor: dashboardColors.uploadButtonBackground,
+    color: dashboardColors.uploadButtonText,
+    border: "none",
+    fontWeight: 600,
+    fontSize: 16,
+    width: "auto",
+    minWidth: 200,
+    padding: "14px 28px",
+    borderRadius: 12,
+    boxShadow: "0 4px 18px rgba(0, 122, 255, 0.22)",
+    cursor: loading ? ("not-allowed" as const) : ("pointer" as const),
+    opacity: loading ? 0.65 : 1,
+    textAlign: "center" as const,
+    display: "flex" as const,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    fontFamily: "inherit",
+    flexShrink: 0,
+  }),
+  overlay: {
+    position: "absolute" as const,
+    inset: 0,
+    background: "rgba(248, 250, 252, 0.72)",
+    backdropFilter: "blur(6px)",
+    WebkitBackdropFilter: "blur(6px)",
+    zIndex: 2,
+    display: "flex" as const,
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    borderRadius: 16,
+  },
+  overlayText: {
+    fontSize: 17,
+    color: dashboardColors.sectionTitle,
+    fontWeight: 600,
+  },
+  outputBox: {
+    width: "100%",
+    flex: "0 0 auto" as const,
+  },
+  title: {
+    fontSize: 32,
+    margin: 0,
+    marginBottom: 8,
+    color: dashboardColors.title,
+    textAlign: "left" as const,
+    fontWeight: 700,
+    letterSpacing: "-0.03em",
+    flexShrink: 0,
+  },
+  sessionBadge: {
+    display: "inline-block" as const,
+    fontSize: 15,
+    marginBottom: 0,
+    color: dashboardColors.subtitle,
+    textAlign: "left" as const,
+    padding: "6px 12px",
+    background: dashboardColors.studyCardBackground,
+    borderRadius: 8,
+    border: `1px solid ${dashboardColors.cardBorder}`,
+    fontWeight: 500,
+    flexShrink: 0,
+  },
+  main: {
+    flex: 1,
+    minWidth: 0,
+    display: "flex" as const,
+    flexDirection: "column" as const,
+    padding: "24px 32px 40px",
+    backgroundColor: "transparent",
+    boxSizing: "border-box" as const,
+    width: "100%",
+    maxWidth: "100%",
+  },
+  headerBlock: {
+    flexShrink: 0,
+    marginBottom: 20,
+  },
+  tabs: {
+    display: "flex" as const,
+    gap: 6,
+    backgroundColor: workspaceColors.tabBackground,
+    padding: 6,
+    borderRadius: 14,
+    marginTop: 0,
+    width: "100%",
+    boxSizing: "border-box" as const,
+    flexShrink: 0,
+  },
+  workspaceGrow: (compact: boolean) =>
+    compact
+      ? ({
+          flex: 1,
+          minHeight: 0,
+          display: "flex" as const,
+          flexDirection: "column" as const,
+        } as const)
+      : ({
+          flex: "none" as const,
+          display: "block" as const,
+        } as const),
+  tabButton: {
+    flex: 1,
+    padding: "10px 8px",
+    borderRadius: 10,
+    border: "none",
+    cursor: "pointer" as const,
+    fontWeight: 600,
+    fontSize: 14,
+    color: dashboardColors.subtitle,
+    transition: "background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease",
+    fontFamily: "inherit",
+  },
+  tabButtonActive: {
+    backgroundColor: workspaceColors.tabActive,
+    color: dashboardColors.sectionTitle,
+    boxShadow: dashboardColors.shadowSm,
+  },
+  tabButtonIdle: {
+    backgroundColor: "transparent",
+    color: dashboardColors.subtitle,
+  },
+  contentText: {
+    fontSize: 17,
+    color: dashboardColors.textareaText,
+    width: "100%",
+    whiteSpace: "pre-wrap" as const,
+    textAlign: "left" as const,
+    lineHeight: 1.55,
+  },
+};
+
+type TabProps = {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+};
+
+const TabButton: React.FC<TabProps> = ({ label, active, onClick }) => {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        ...styles.tabButton,
+        ...(active ? styles.tabButtonActive : styles.tabButtonIdle),
+      }}
+    >
+      {label}
+    </button>
+  );
+};
 
 const StudyWorkspace: React.FC = () => {
   const location = useLocation();
@@ -36,7 +255,6 @@ const StudyWorkspace: React.FC = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleGenerate = async () => {
     if (!studyMaterial) return;
@@ -63,24 +281,36 @@ const StudyWorkspace: React.FC = () => {
     setLoading(false);
   };
 
+  const label =
+    activeTab === "flashcards"
+      ? "Flashcards"
+      : activeTab === "keypoints"
+        ? "Key points"
+        : activeTab.charAt(0).toUpperCase() + activeTab.slice(1);
+
+  const hasOutput = Boolean(outputs[activeTab]);
+  const centerEmpty = !hasOutput && !loading;
+  const compactPanel = !hasOutput;
+
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
+    <div style={styles.page}>
       <Sidebar />
       <div style={styles.main}>
-        <div>
-          <h1 style={styles.title}>Study Workspace</h1>
-          <p style={styles.subtitle}>{sessionTitle || "Untitled Session"}</p>
+        <div style={styles.headerBlock}>
+          <h1 style={styles.title}>Study workspace</h1>
+          <p style={{ ...styles.sessionBadge, marginTop: 10 }}>
+            {sessionTitle || "Untitled session"}
+          </p>
         </div>
 
-        {/* Tabs */}
-        <div style={styles.tabs}>
+        <div style={styles.tabs} role="tablist" aria-label="Study tools">
           <TabButton
             label="Summary"
             active={activeTab === "summary"}
             onClick={() => setActiveTab("summary")}
           />
           <TabButton
-            label="Key Points"
+            label="Key points"
             active={activeTab === "keypoints"}
             onClick={() => setActiveTab("keypoints")}
           />
@@ -96,255 +326,57 @@ const StudyWorkspace: React.FC = () => {
           />
         </div>
 
-        {/* Output + Generate Button inside content box with overlay */}
-        <div style={styles.relative}>
-          <div
-            style={{
-              ...styles.contentBoxDynamic(isExpanded, outputs[activeTab]),
-            }}
-          >
-            {/* Generate Button inside content box */}
-            {!outputs[activeTab] && !loading && (
-              <button
-                onClick={handleGenerate}
-                disabled={loading}
-                style={styles.generateButtonDynamic(loading)}
-              >
-                {`Click to generate ${activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}`}
-              </button>
-            )}
-            {/* Overlay for loading */}
-            {loading && (
-              <div style={styles.overlay}>
-                <p style={styles.overlayText}>Generating {activeTab}...</p>
-              </div>
-            )}
-            {/* Output */}
-            {!loading && outputs[activeTab] && (
-              <div style={styles.outputBox}>
-                {activeTab === "summary" ? (
-                  <SummaryDisplay rawData={outputs.summary} />
-                ) : activeTab === "keypoints" ? (
-                  <KeyPointsDisplay rawData={outputs.keypoints} />
-                ) : activeTab === "quiz" ? (
-                  <QuizDisplay rawData={outputs.quiz} />
-                ) : activeTab === "flashcards" ? (
-                  <FlashcardDisplay rawData={outputs.flashcards} />
-                ) : (
-                  <p style={styles.contentText}>{outputs[activeTab]}</p>
-                )}
-              </div>
-            )}
+        <div style={styles.workspaceGrow(compactPanel)}>
+          <div style={styles.relative(compactPanel)}>
+            <div style={styles.contentBox(compactPanel, centerEmpty)}>
+              {!outputs[activeTab] && !loading && (
+                <button
+                  type="button"
+                  onClick={handleGenerate}
+                  disabled={loading}
+                  style={styles.generateButtonDynamic(loading)}
+                  onMouseOver={(e) => {
+                    if (!loading) {
+                      e.currentTarget.style.backgroundColor =
+                        dashboardColors.uploadButtonHover;
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.backgroundColor =
+                      dashboardColors.uploadButtonBackground;
+                  }}
+                >
+                  Generate {label.toLowerCase()}
+                </button>
+              )}
+              {loading && (
+                <div style={styles.overlay}>
+                  <p style={styles.overlayText}>
+                    Generating {label.toLowerCase()}…
+                  </p>
+                </div>
+              )}
+              {!loading && outputs[activeTab] && (
+                <div style={styles.outputBox}>
+                  {activeTab === "summary" ? (
+                    <SummaryDisplay rawData={outputs.summary} />
+                  ) : activeTab === "keypoints" ? (
+                    <KeyPointsDisplay rawData={outputs.keypoints} />
+                  ) : activeTab === "quiz" ? (
+                    <QuizDisplay rawData={outputs.quiz} />
+                  ) : activeTab === "flashcards" ? (
+                    <FlashcardDisplay rawData={outputs.flashcards} />
+                  ) : (
+                    <p style={styles.contentText}>{outputs[activeTab]}</p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
-          {/* Expand/Collapse icon button */}
-          <button
-            onClick={() => setIsExpanded((prev) => !prev)}
-            style={styles.expandIconButton}
-            aria-label={isExpanded ? "Minimize" : "Fullscreen"}
-          >
-            <img
-              src={isExpanded ? collapseIcon : expandIcon}
-              alt={isExpanded ? "Minimize" : "Fullscreen"}
-              style={styles.expandIconImg}
-            />
-          </button>
         </div>
       </div>
     </div>
-    
   );
 };
 
 export default StudyWorkspace;
-
-type TabProps = {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-};
-
-const TabButton: React.FC<TabProps> = ({ label, active, onClick }) => {
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        ...styles.tabButton,
-        backgroundColor: active
-          ? workspaceColors.tabActive
-          : workspaceColors.tabInactive,
-        boxShadow: active ? "0 4px 12px rgba(0,0,0,0.08)" : "none",
-      }}
-    >
-      {label}
-    </button>
-  );
-};
-
-  const styles = {
-        relative: {
-          position: "relative" as const,
-        },
-        contentBoxDynamic: (isExpanded: boolean, hasOutput: string) => ({
-          ...styles.contentBox,
-          height: isExpanded ? "60vh" : "400px",
-          background: "linear-gradient(135deg, #f5f6fa 60%, #e3e6ee 100%)",
-          boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
-          border: `1px solid ${dashboardColors.cardBorder}`,
-          display: "flex",
-          flexDirection: "column" as const,
-          alignItems: "center",
-          justifyContent: hasOutput ? "flex-start" : "center",
-        }),
-        generateButtonDynamic: (loading: boolean) => ({
-          ...styles.generateButton,
-          backgroundColor: dashboardColors.uploadButtonBackground,
-          color: dashboardColors.uploadButtonText,
-          border: "none",
-          fontWeight: 600,
-          fontSize: "18px",
-          width: "auto",
-          minWidth: 220,
-          padding: "14px 32px",
-          borderRadius: "12px",
-          boxShadow: "0 2px 8px #0001",
-          cursor: loading ? "not-allowed" : "pointer",
-          margin: "0 auto",
-          marginBottom: "12px",
-          textAlign: "center" as const,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }),
-        overlay: {
-          position: "absolute" as const,
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          background: "rgba(200, 200, 210, 0.45)",
-          zIndex: 2,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          borderRadius: "16px",
-        },
-        overlayText: {
-          fontSize: 20,
-          color: dashboardColors.sectionTitle,
-          fontWeight: 600,
-        },
-        outputBox: {
-          width: "100%",
-          height: "100%",
-        },
-        expandIconButton: {
-          position: "absolute" as const,
-          top: 18,
-          right: 18,
-          background: "#f5f6fa",
-          border: `1px solid ${dashboardColors.cardBorder}`,
-          borderRadius: "50%",
-          width: 38,
-          height: 38,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          boxShadow: "0 2px 8px #0001",
-          cursor: "pointer",
-          zIndex: 3,
-          padding: 0,
-        },
-        expandIconImg: {
-          width: 22,
-          height: 22,
-          objectFit: "contain" as const,
-        },
-    title: {
-      fontSize: "32px",
-      marginBottom: "24px",
-      color: dashboardColors.title,
-      textAlign: "left" as const,
-    },
-
-    subtitle: {
-      fontSize: "18px",
-      marginBottom: "24px",
-      color: dashboardColors.subtitle,
-      textAlign: "left" as const,
-    },
-  
-    main: {
-      flex: 1,
-      padding: "40px",
-      background: `linear-gradient(135deg, ${dashboardColors.pageGradientStart}, ${dashboardColors.pageGradientEnd})`,
-    },
-  
-    tabs: {
-      display: "flex",
-      gap: "16px",
-      backgroundColor: workspaceColors.tabBackground,
-      padding: "12px",
-      borderRadius: "12px",
-      marginTop: "20px",
-
-      width: "100%",
-      maxWidth: "700px",
-      marginLeft: "auto",
-      marginRight: "auto",
-
-      justifyContent: "space-between" as const,
-    },
-  
-    tabButton: {
-      flex: 1,
-      padding: "12px 0",
-      borderRadius: "10px",
-      border: "none",
-      cursor: "pointer",
-      fontWeight: 600,
-      color: dashboardColors.sectionTitle,
-      transition: "all 0.2s ease",
-    },
-  
-    contentBox: {
-      marginTop: "30px",
-      border: `1px solid ${dashboardColors.cardBorder}`,
-      borderRadius: "16px",
-      height: "400px",
-      maxHeight: "80vh",
-      display: "flex",
-      justifyContent: "flex-start" as const,
-      alignItems: "flex-start" as const,
-      backgroundColor: dashboardColors.cardBackground,
-      boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
-      padding: "20px",
-      overflowY: "auto" as const,
-      transition: "height 0.3s ease",
-    },
-  
-    contentText: {
-      fontSize: "18px",
-      color: dashboardColors.textareaText,
-      width: "100%",
-      whiteSpace: "pre-wrap" as const,
-      textAlign: "left" as const,
-    },
-    generateButton: {
-      justifyContent: "center" as const,
-      marginTop: "20px",
-      borderRadius: "12px",
-      height: "40px",
-      width: "170px",
-      fontSize: "16px",
-      backgroundColor: workspaceColors.generateButtonBackground,
-    },
-    expandButton: {
-      marginTop: "20px",
-      padding: "8px 14px",
-      borderRadius: "10px",
-      border: "none",
-      cursor: "pointer",
-      backgroundColor: workspaceColors.generateButtonBackground,
-      fontWeight: 600,
-    },
-  };

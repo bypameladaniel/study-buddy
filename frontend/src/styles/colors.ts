@@ -1,49 +1,50 @@
+/** Apple-inspired: cool grays + system blue */
 export const dashboardColors = {
-  // Backgrounds
-  pageBackground: "#F2F7FF",
-  pageGradientStart: "#F8FBFF",
-  pageGradientEnd: "#EEF5FF",
-  cardBackground: "#FFFFFF",
-  studyCardBackground: "#cee3fab7",
-  textareaBackground: "#fcfaf6",
+  pageBackground: "#f5f5f7",
+  pageGradientStart: "#fbfbfd",
+  pageGradientEnd: "#e8eef5",
+  cardBackground: "#ffffff",
+  studyCardBackground: "#f5f7fa",
+  textareaBackground: "#fafbfc",
 
-  // Borders
-  cardBorder: "#CBDCF4",
-  studyCardBorder: "#a8bddb",
-  textareaBorder: "#EBCFA5",
+  cardBorder: "#d2d2d7",
+  studyCardBorder: "#c5c9d0",
+  textareaBorder: "#d2d2d7",
 
-  // Text
-  title: "#132E4F",
-  sectionTitle: "#1D4D80",
-  subtitle: "#4D6887",
-  studyTitle: "#234366",
-  studySubtitle: "#58779A",
-  textareaText: "#2E2A24",
-  textareaPlaceholder: "#8B7B63",
+  title: "#1d1d1f",
+  sectionTitle: "#424245",
+  subtitle: "#6e6e73",
+  studyTitle: "#1d1d1f",
+  studySubtitle: "#6e6e73",
+  textareaText: "#1d1d1f",
+  textareaPlaceholder: "#86868b",
 
-  // Button 
-  uploadButtonBackground: "#F0BA4A",
-  uploadButtonText: "#2B2012",
-  uploadButtonHover: "#E2A93A",
-  cancelButtonBackground: "#f5f5f5",
-  cancelButtonText: "#444",
-  cancelButtonBorder: "#CBDCF4",
-  cancelButtonHover: "#e0e7ef",
-  cancelButtonActive: "#d3dae3",
-  deleteButtonBackground: "#fff0f0",
-  deleteButtonText: "#e53e3e",
-  deleteButtonBorder: "#e53e3e",
-  deleteButtonHover: "#ffe0e0",
-  deleteButtonActive: "#f8bcbc",
-  
+  uploadButtonBackground: "#007aff",
+  uploadButtonText: "#ffffff",
+  uploadButtonHover: "#0066db",
+  cancelButtonBackground: "#f5f5f7",
+  cancelButtonText: "#424245",
+  cancelButtonBorder: "#d2d2d7",
+  cancelButtonHover: "#ebebed",
+  cancelButtonActive: "#e5e5ea",
+  deleteButtonBackground: "#fef2f2",
+  deleteButtonText: "#d70015",
+  deleteButtonBorder: "#ffd0d3",
+  deleteButtonHover: "#ffe5e7",
+  deleteButtonActive: "#ffd4d8",
+
+  shadowSm: "0 1px 3px rgba(0, 55, 90, 0.06)",
+  shadowMd: "0 4px 20px rgba(0, 55, 90, 0.08)",
+  shadowLg: "0 12px 48px rgba(0, 55, 90, 0.1)",
 } as const;
 
 export const workspaceColors = {
-  // Tabs 
-  tabBackground: "#E6EEF8",
-  tabInactive: "#DCE7F5",
+  tabBackground: "#e8ecf2",
+  tabInactive: "#f2f4f7",
   tabActive: dashboardColors.cardBackground,
 
-  // Button
-  generateButtonBackground: "#4D6887",
+  generateButtonBackground: "#007aff",
+
+  contentGradientStart: "#f8fafc",
+  contentGradientEnd: "#e3f0ff",
 } as const;
