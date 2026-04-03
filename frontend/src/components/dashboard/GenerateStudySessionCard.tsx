@@ -1,18 +1,61 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { dashboardColors } from "../../styles/colors";
 import { useNavigate } from "react-router-dom";
 
 const GenerateStudySessionCard: React.FC = () => {
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const [text, setText] = useState("");
   const [sessionName, setSessionName] = useState("");
   const [showError, setShowError] = useState(false);
+  const [fileError, setFileError] = useState("");
+
+  const handleOpenFilePicker = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== "text/plain" && !file.name.endsWith(".txt")) {
+      setFileError("Please upload a .txt file.");
+      e.target.value = "";
+      return;
+    }
+
+    setFileError("");
+
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const fileContent = event.target?.result;
+      if (typeof fileContent === "string") {
+        setText(fileContent);
+        if (showError) setShowError(false);
+
+        if (!sessionName.trim()) {
+          const nameWithoutExtension = file.name.replace(/\.[^/.]+$/, "");
+          setSessionName(nameWithoutExtension);
+        }
+      }
+    };
+
+    reader.onerror = () => {
+      setFileError("Failed to read the file. Please try again.");
+    };
+
+    reader.readAsText(file);
+    e.target.value = "";
+  };
 
   const handleUpload = () => {
     if (!text.trim()) {
       setShowError(true);
       return;
     }
+
     setShowError(false);
     navigate("/study-workspace", {
       state: {
@@ -26,7 +69,7 @@ const GenerateStudySessionCard: React.FC = () => {
     <div style={styles.card}>
       <h2 style={styles.sectionTitle}>Generate new study session</h2>
       <p style={styles.lead}>
-        Name your session, paste your notes or reading, then upload to open the workspace.
+        Name your session, paste your notes or reading, or upload a text file to open the workspace.
       </p>
 
       <label htmlFor="session-name" style={styles.label}>
@@ -54,11 +97,36 @@ const GenerateStudySessionCard: React.FC = () => {
           if (showError) setShowError(false);
         }}
       />
+
       {showError && !text.trim() && (
         <p style={styles.errorText}>Add some content before continuing.</p>
       )}
 
-      <div style={styles.uploadContainer}>
+      {fileError && <p style={styles.errorText}>{fileError}</p>}
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".txt,text/plain"
+        onChange={handleFileChange}
+        style={{ display: "none" }}
+      />
+
+      <div style={styles.buttonRow}>
+        <button
+          type="button"
+          style={styles.secondaryButton}
+          onClick={handleOpenFilePicker}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = dashboardColors.cardBorder;
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent";
+          }}
+        >
+          Upload text file
+        </button>
+
         <button
           type="button"
           style={styles.uploadButton}
@@ -123,10 +191,26 @@ const styles: { [key: string]: React.CSSProperties } = {
     boxSizing: "border-box",
     fontFamily: "inherit",
   },
-  uploadContainer: {
+  input: {
+    width: "100%",
+    padding: "12px 14px",
+    borderRadius: 10,
+    border: `1px solid ${dashboardColors.textareaBorder}`,
+    backgroundColor: dashboardColors.textareaBackground,
+    color: dashboardColors.textareaText,
+    marginBottom: 16,
+    fontSize: 15,
+    outline: "none",
+    boxSizing: "border-box",
+    fontFamily: "inherit",
+  },
+  buttonRow: {
     display: "flex",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginTop: 16,
+    gap: 12,
+    flexWrap: "wrap",
   },
   uploadButton: {
     padding: "12px 24px",
@@ -140,18 +224,16 @@ const styles: { [key: string]: React.CSSProperties } = {
     transition: "background-color 0.15s ease, transform 0.15s ease",
     boxShadow: "0 4px 18px rgba(0, 122, 255, 0.22)",
   },
-  input: {
-    width: "100%",
-    padding: "12px 14px",
-    borderRadius: 10,
-    border: `1px solid ${dashboardColors.textareaBorder}`,
-    backgroundColor: dashboardColors.textareaBackground,
-    color: dashboardColors.textareaText,
-    marginBottom: 16,
+  secondaryButton: {
+    padding: "12px 20px",
+    borderRadius: 12,
+    border: `1px solid ${dashboardColors.cardBorder}`,
+    backgroundColor: "transparent",
+    color: dashboardColors.sectionTitle,
+    fontWeight: 600,
     fontSize: 15,
-    outline: "none",
-    boxSizing: "border-box",
-    fontFamily: "inherit",
+    cursor: "pointer",
+    transition: "background-color 0.15s ease",
   },
   errorText: {
     color: dashboardColors.deleteButtonText,
