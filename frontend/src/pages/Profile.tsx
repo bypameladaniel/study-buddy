@@ -1,7 +1,7 @@
 import Sidebar from "../components/layout/Sidebar";
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { dashboardColors } from "../styles/colors";
+import { StudySessionColors } from "../styles/colors";
 import { useUserProfile } from "../hooks/useUserProfile";
 import editPencil from "../assets/edit-pencil.svg";
 import defaultProfilePhoto from "../assets/default-pfp.jpeg";
@@ -306,12 +306,12 @@ const Profile: React.FC = () => {
                       onMouseOver={(e) => {
                         if (!saving && isDirty) {
                           e.currentTarget.style.background =
-                            dashboardColors.uploadButtonHover;
+                            StudySessionColors.uploadButtonHover;
                         }
                       }}
                       onMouseOut={(e) => {
                         e.currentTarget.style.background =
-                          dashboardColors.uploadButtonBackground;
+                          StudySessionColors.uploadButtonBackground;
                       }}
                     >
                       {saving ? "Saving…" : "Save changes"}
@@ -328,12 +328,12 @@ const Profile: React.FC = () => {
                       onMouseOver={(e) => {
                         if (!saving && isDirty) {
                           e.currentTarget.style.background =
-                            dashboardColors.cancelButtonHover;
+                            StudySessionColors.cancelButtonHover;
                         }
                       }}
                       onMouseOut={(e) => {
                         e.currentTarget.style.background =
-                          dashboardColors.cancelButtonBackground;
+                          StudySessionColors.cancelButtonBackground;
                       }}
                     >
                       Reset
@@ -351,12 +351,12 @@ const Profile: React.FC = () => {
                   onMouseOver={(e) => {
                     if (!saving) {
                       e.currentTarget.style.background =
-                        dashboardColors.deleteButtonHover;
+                        StudySessionColors.deleteButtonHover;
                     }
                   }}
                   onMouseOut={(e) => {
                     e.currentTarget.style.background =
-                      dashboardColors.deleteButtonBackground;
+                      StudySessionColors.deleteButtonBackground;
                   }}
                 >
                   Delete account
@@ -451,9 +451,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     paddingBottom: 56,
     paddingLeft: 36,
     paddingRight: 36,
-    backgroundColor: dashboardColors.pageBackground,
-    backgroundImage: `linear-gradient(180deg, ${dashboardColors.pageGradientStart} 0%, ${dashboardColors.pageGradientEnd} 100%)`,
-    color: dashboardColors.title,
+    backgroundColor: StudySessionColors.pageBackground,
+    backgroundImage: `linear-gradient(180deg, ${StudySessionColors.pageGradientStart} 0%, ${StudySessionColors.pageGradientEnd} 100%)`,
+    color: StudySessionColors.title,
   },
   contentWrap: {
     width: "100%",
@@ -467,7 +467,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: 36,
     margin: 0,
     marginBottom: 10,
-    color: dashboardColors.title,
+    color: StudySessionColors.title,
     fontWeight: 700,
     letterSpacing: "-0.03em",
   },
@@ -475,7 +475,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     margin: 0,
     fontSize: 17,
     lineHeight: 1.55,
-    color: dashboardColors.subtitle,
+    color: StudySessionColors.subtitle,
     maxWidth: 560,
   },
   stack: {
@@ -490,21 +490,21 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "stretch",
   },
   detailsPanel: {
-    background: dashboardColors.cardBackground,
+    background: StudySessionColors.cardBackground,
     borderRadius: 20,
-    border: `1px solid ${dashboardColors.cardBorder}`,
-    boxShadow: dashboardColors.shadowMd,
-    padding: "32px 34px 56px",
+    border: `1px solid ${StudySessionColors.cardBorder}`,
+    boxShadow: StudySessionColors.shadowMd,
+    padding: "32px 34px 72px",  // increased bottom padding so button clears the separator
     boxSizing: "border-box",
     flex: "1 1 380px",
     minWidth: "min(100%, 320px)",
     position: "relative" as const,
   },
   identityPanel: {
-    background: dashboardColors.cardBackground,
+    background: StudySessionColors.cardBackground,
     borderRadius: 24,
-    border: `1px solid ${dashboardColors.cardBorder}`,
-    boxShadow: dashboardColors.shadowMd,
+    border: `1px solid ${StudySessionColors.cardBorder}`,
+    boxShadow: StudySessionColors.shadowMd,
     padding: "36px 28px 32px",
     boxSizing: "border-box",
     flex: "0 1 380px",
@@ -534,7 +534,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "center",
     background: "#e8ecf0",
     boxShadow: "0 10px 32px rgba(0, 122, 255, 0.22)",
-    border: `3px solid ${dashboardColors.cardBackground}`,
+    border: `3px solid ${StudySessionColors.cardBackground}`,
   },
   avatarPhoto: {
     width: "100%",
@@ -557,7 +557,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "center",
     cursor: "pointer",
     padding: 0,
-    boxShadow: dashboardColors.shadowSm,
+    boxShadow: StudySessionColors.shadowSm,
   },
   avatarEditIcon: {
     width: 18,
@@ -569,7 +569,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     margin: 0,
     fontSize: 22,
     fontWeight: 700,
-    color: dashboardColors.title,
+    color: StudySessionColors.title,
     letterSpacing: "-0.02em",
     lineHeight: 1.25,
     wordBreak: "break-word",
@@ -578,7 +578,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   identityTagline: {
     margin: "8px 0 0 0",
     fontSize: 14,
-    color: dashboardColors.subtitle,
+    color: StudySessionColors.subtitle,
     lineHeight: 1.45,
   },
   accountInset: {
@@ -612,7 +612,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   accountFieldValue: {
     fontSize: 15,
-    color: dashboardColors.title,
+    color: StudySessionColors.title,
     fontWeight: 500,
     wordBreak: "break-all" as const,
   },
@@ -640,13 +640,13 @@ const styles: { [key: string]: React.CSSProperties } = {
     margin: 0,
     fontSize: 19,
     fontWeight: 700,
-    color: dashboardColors.sectionTitle,
+    color: StudySessionColors.sectionTitle,
     letterSpacing: "-0.02em",
   },
   sectionLead: {
     margin: "10px 0 22px 0",
     fontSize: 15,
-    color: dashboardColors.subtitle,
+    color: StudySessionColors.subtitle,
     lineHeight: 1.55,
   },
   formInner: {
@@ -669,13 +669,13 @@ const styles: { [key: string]: React.CSSProperties } = {
   label: {
     fontSize: 13,
     fontWeight: 600,
-    color: dashboardColors.sectionTitle,
+    color: StudySessionColors.sectionTitle,
     letterSpacing: 0.02,
   },
   fieldHelp: {
     margin: 0,
     fontSize: 13,
-    color: dashboardColors.studySubtitle,
+    color: StudySessionColors.studySubtitle,
     lineHeight: 1.45,
   },
   input: {
@@ -683,10 +683,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     boxSizing: "border-box",
     padding: "12px 14px",
     borderRadius: 10,
-    border: `1px solid ${dashboardColors.cardBorder}`,
+    border: `1px solid ${StudySessionColors.cardBorder}`,
     fontSize: 16,
     background: "#fff",
-    color: dashboardColors.title,
+    color: StudySessionColors.title,
     outline: "none",
   },
   disabledInput: {
@@ -694,10 +694,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     boxSizing: "border-box",
     padding: "12px 14px",
     borderRadius: 10,
-    border: `1px solid ${dashboardColors.cardBorder}`,
+    border: `1px solid ${StudySessionColors.cardBorder}`,
     fontSize: 16,
-    background: dashboardColors.cancelButtonBackground,
-    color: dashboardColors.studySubtitle,
+    background: StudySessionColors.cancelButtonBackground,
+    color: StudySessionColors.studySubtitle,
   },
   feedback: {
     fontSize: 14,
@@ -711,9 +711,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     border: "1px solid rgba(13, 128, 80, 0.2)",
   },
   feedbackError: {
-    background: dashboardColors.deleteButtonBackground,
-    color: dashboardColors.deleteButtonText,
-    border: `1px solid ${dashboardColors.deleteButtonBorder}`,
+    background: StudySessionColors.deleteButtonBackground,
+    color: StudySessionColors.deleteButtonText,
+    border: `1px solid ${StudySessionColors.deleteButtonBorder}`,
   },
   actionsRow: {
     display: "flex",
@@ -722,8 +722,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginTop: 4,
   },
   saveButton: {
-    background: dashboardColors.uploadButtonBackground,
-    color: dashboardColors.uploadButtonText,
+    background: StudySessionColors.uploadButtonBackground,
+    color: StudySessionColors.uploadButtonText,
     border: "none",
     borderRadius: 10,
     padding: "13px 22px",
@@ -734,9 +734,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     minWidth: 148,
   },
   cancelButton: {
-    background: dashboardColors.cancelButtonBackground,
-    color: dashboardColors.cancelButtonText,
-    border: `1px solid ${dashboardColors.cancelButtonBorder}`,
+    background: StudySessionColors.cancelButtonBackground,
+    color: StudySessionColors.cancelButtonText,
+    border: `1px solid ${StudySessionColors.cancelButtonBorder}`,
     borderRadius: 10,
     padding: "13px 22px",
     fontWeight: 600,
@@ -758,16 +758,16 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginTop: 24,
     marginBottom: 0,
     border: "none",
-    borderTop: `1px solid ${dashboardColors.cardBorder}`,
+    borderTop: `1px solid ${StudySessionColors.cardBorder}`,
     boxSizing: "border-box" as const,
   },
   deleteButtonCorner: {
     position: "absolute" as const,
     right: 28,
-    bottom: 24,
+    bottom: 20,  // sits comfortably inside the expanded bottom padding
     background: "#fff",
-    color: dashboardColors.deleteButtonText,
-    border: `1px solid ${dashboardColors.deleteButtonBorder}`,
+    color: StudySessionColors.deleteButtonText,
+    border: `1px solid ${StudySessionColors.deleteButtonBorder}`,
     borderRadius: 10,
     padding: "10px 16px",
     fontWeight: 600,
@@ -791,10 +791,10 @@ const styles: { [key: string]: React.CSSProperties } = {
   modalDialog: {
     width: "100%",
     maxWidth: 440,
-    background: dashboardColors.cardBackground,
+    background: StudySessionColors.cardBackground,
     borderRadius: 20,
-    border: `1px solid ${dashboardColors.cardBorder}`,
-    boxShadow: dashboardColors.shadowLg,
+    border: `1px solid ${StudySessionColors.cardBorder}`,
+    boxShadow: StudySessionColors.shadowLg,
     padding: "28px 28px 24px",
     boxSizing: "border-box",
   },
@@ -802,33 +802,33 @@ const styles: { [key: string]: React.CSSProperties } = {
     margin: 0,
     fontSize: 22,
     fontWeight: 700,
-    color: dashboardColors.title,
+    color: StudySessionColors.title,
     letterSpacing: "-0.02em",
   },
   modalBody: {
     margin: "12px 0 20px",
     fontSize: 15,
     lineHeight: 1.55,
-    color: dashboardColors.subtitle,
+    color: StudySessionColors.subtitle,
   },
   modalLabel: {
     display: "block",
     fontSize: 13,
     fontWeight: 600,
-    color: dashboardColors.sectionTitle,
+    color: StudySessionColors.sectionTitle,
     marginBottom: 8,
   },
   modalMono: {
     fontFamily: "ui-monospace, monospace",
     fontWeight: 700,
-    color: dashboardColors.deleteButtonText,
+    color: StudySessionColors.deleteButtonText,
   },
   modalInput: {
     width: "100%",
     boxSizing: "border-box",
     padding: "12px 14px",
     borderRadius: 10,
-    border: `1px solid ${dashboardColors.cardBorder}`,
+    border: `1px solid ${StudySessionColors.cardBorder}`,
     fontSize: 16,
     fontFamily: "ui-monospace, monospace",
     letterSpacing: "0.04em",
@@ -837,7 +837,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   modalError: {
     margin: "0 0 12px",
     fontSize: 14,
-    color: dashboardColors.deleteButtonText,
+    color: StudySessionColors.deleteButtonText,
     lineHeight: 1.45,
   },
   modalActions: {
@@ -850,9 +850,9 @@ const styles: { [key: string]: React.CSSProperties } = {
   modalCancel: {
     padding: "11px 18px",
     borderRadius: 10,
-    border: `1px solid ${dashboardColors.cancelButtonBorder}`,
-    background: dashboardColors.cancelButtonBackground,
-    color: dashboardColors.cancelButtonText,
+    border: `1px solid ${StudySessionColors.cancelButtonBorder}`,
+    background: StudySessionColors.cancelButtonBackground,
+    color: StudySessionColors.cancelButtonText,
     fontWeight: 600,
     fontSize: 15,
     cursor: "pointer",
@@ -861,8 +861,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   modalConfirm: {
     padding: "11px 18px",
     borderRadius: 10,
-    border: `1px solid ${dashboardColors.deleteButtonText}`,
-    background: dashboardColors.deleteButtonText,
+    border: `1px solid ${StudySessionColors.deleteButtonText}`,
+    background: StudySessionColors.deleteButtonText,
     color: "#fff",
     fontWeight: 600,
     fontSize: 15,
@@ -874,10 +874,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     cursor: "not-allowed",
   },
   loadingCard: {
-    background: dashboardColors.cardBackground,
+    background: StudySessionColors.cardBackground,
     borderRadius: 16,
-    border: `1px solid ${dashboardColors.cardBorder}`,
-    boxShadow: dashboardColors.shadowMd,
+    border: `1px solid ${StudySessionColors.cardBorder}`,
+    boxShadow: StudySessionColors.shadowMd,
     padding: 32,
     display: "flex",
     flexDirection: "column",
@@ -889,15 +889,15 @@ const styles: { [key: string]: React.CSSProperties } = {
   spinner: {
     width: 28,
     height: 28,
-    border: `3px solid ${dashboardColors.cardBorder}`,
-    borderTopColor: dashboardColors.sectionTitle,
+    border: `3px solid ${StudySessionColors.cardBorder}`,
+    borderTopColor: StudySessionColors.sectionTitle,
     borderRadius: "50%",
     animation: "profile-spin 0.75s linear infinite",
   },
   loadingText: {
     margin: 0,
     fontSize: 14,
-    color: dashboardColors.subtitle,
+    color: StudySessionColors.subtitle,
   },
 };
 

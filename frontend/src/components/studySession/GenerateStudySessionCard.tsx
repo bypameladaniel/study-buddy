@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { dashboardColors } from "../../styles/colors";
+import { StudySessionColors } from "../../styles/colors";
 import { useNavigate } from "react-router-dom";
 
 const GenerateStudySessionCard: React.FC = () => {
@@ -118,7 +118,7 @@ const GenerateStudySessionCard: React.FC = () => {
           style={styles.secondaryButton}
           onClick={handleOpenFilePicker}
           onMouseOver={(e) => {
-            e.currentTarget.style.backgroundColor = dashboardColors.cardBorder;
+            e.currentTarget.style.backgroundColor = StudySessionColors.cardBorder;
           }}
           onMouseOut={(e) => {
             e.currentTarget.style.backgroundColor = "transparent";
@@ -132,10 +132,10 @@ const GenerateStudySessionCard: React.FC = () => {
           style={styles.uploadButton}
           onClick={handleUpload}
           onMouseOver={(e) => {
-            e.currentTarget.style.backgroundColor = dashboardColors.uploadButtonHover;
+            e.currentTarget.style.backgroundColor = StudySessionColors.uploadButtonHover;
           }}
           onMouseOut={(e) => {
-            e.currentTarget.style.backgroundColor = dashboardColors.uploadButtonBackground;
+            e.currentTarget.style.backgroundColor = StudySessionColors.uploadButtonBackground;
           }}
         >
           Open workspace
@@ -147,18 +147,18 @@ const GenerateStudySessionCard: React.FC = () => {
 
 const styles: { [key: string]: React.CSSProperties } = {
   card: {
-    backgroundColor: dashboardColors.cardBackground,
-    border: `1px solid ${dashboardColors.cardBorder}`,
+    backgroundColor: StudySessionColors.cardBackground,
+    border: `1px solid ${StudySessionColors.cardBorder}`,
     padding: "28px 28px 24px",
     borderRadius: 16,
     marginBottom: 36,
-    boxShadow: dashboardColors.shadowLg,
+    boxShadow: StudySessionColors.shadowLg,
   },
   sectionTitle: {
     fontSize: "1.35rem",
     margin: 0,
     marginBottom: 8,
-    color: dashboardColors.sectionTitle,
+    color: StudySessionColors.sectionTitle,
     fontWeight: 700,
     letterSpacing: "-0.02em",
   },
@@ -166,13 +166,13 @@ const styles: { [key: string]: React.CSSProperties } = {
     margin: "0 0 20px",
     fontSize: 15,
     lineHeight: 1.55,
-    color: dashboardColors.subtitle,
+    color: StudySessionColors.subtitle,
   },
   label: {
     display: "block",
     fontSize: 13,
     fontWeight: 600,
-    color: dashboardColors.sectionTitle,
+    color: StudySessionColors.sectionTitle,
     marginBottom: 6,
     letterSpacing: "0.02em",
   },
@@ -180,11 +180,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: "100%",
     minHeight: 220,
     borderRadius: 12,
-    border: `1px solid ${dashboardColors.textareaBorder}`,
+    border: `1px solid ${StudySessionColors.textareaBorder}`,
     padding: "14px 16px",
     resize: "vertical",
-    backgroundColor: dashboardColors.textareaBackground,
-    color: dashboardColors.textareaText,
+    backgroundColor: StudySessionColors.textareaBackground,
+    color: StudySessionColors.textareaText,
     fontSize: 15,
     lineHeight: 1.5,
     outline: "none",
@@ -195,9 +195,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: "100%",
     padding: "12px 14px",
     borderRadius: 10,
-    border: `1px solid ${dashboardColors.textareaBorder}`,
-    backgroundColor: dashboardColors.textareaBackground,
-    color: dashboardColors.textareaText,
+    border: `1px solid ${StudySessionColors.textareaBorder}`,
+    backgroundColor: StudySessionColors.textareaBackground,
+    color: StudySessionColors.textareaText,
     marginBottom: 16,
     fontSize: 15,
     outline: "none",
@@ -216,8 +216,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: "12px 24px",
     borderRadius: 12,
     border: "none",
-    backgroundColor: dashboardColors.uploadButtonBackground,
-    color: dashboardColors.uploadButtonText,
+    backgroundColor: StudySessionColors.uploadButtonBackground,
+    color: StudySessionColors.uploadButtonText,
     fontWeight: 600,
     fontSize: 15,
     cursor: "pointer",
@@ -227,16 +227,16 @@ const styles: { [key: string]: React.CSSProperties } = {
   secondaryButton: {
     padding: "12px 20px",
     borderRadius: 12,
-    border: `1px solid ${dashboardColors.cardBorder}`,
+    border: `1px solid ${StudySessionColors.cardBorder}`,
     backgroundColor: "transparent",
-    color: dashboardColors.sectionTitle,
+    color: StudySessionColors.sectionTitle,
     fontWeight: 600,
     fontSize: 15,
     cursor: "pointer",
     transition: "background-color 0.15s ease",
   },
   errorText: {
-    color: dashboardColors.deleteButtonText,
+    color: StudySessionColors.deleteButtonText,
     fontSize: 13,
     marginTop: 8,
     marginBottom: 0,

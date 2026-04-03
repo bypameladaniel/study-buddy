@@ -11,7 +11,7 @@ const Sidebar: React.FC = () => {
   const { pathname } = useLocation();
 
   const handleNewSession = () => {
-    navigate("/dashboard");
+    navigate("/StudySession");
   };
 
   const handleMyLibrary = () => {
@@ -35,7 +35,7 @@ const Sidebar: React.FC = () => {
           <button
             type="button"
             className={`sidebar__button sidebar__new-session${
-              pathname === "/dashboard" ? " sidebar__new-session--active" : ""
+              pathname === "/StudySession" ? " sidebar__new-session--active" : ""
             }`}
             onClick={handleNewSession}
           >

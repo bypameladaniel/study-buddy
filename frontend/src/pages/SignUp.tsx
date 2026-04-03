@@ -100,7 +100,7 @@ export default function SignUp() {
 
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      navigate("/dashboard");
+      navigate("/MyLibrary");
     } catch (err) {
       console.error(err);
     }finally{
@@ -111,7 +111,7 @@ export default function SignUp() {
   const handleGoogle = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
-      navigate("/dashboard");
+      navigate("/MyLibrary");
     } catch (err) {
       console.error(err);
     }

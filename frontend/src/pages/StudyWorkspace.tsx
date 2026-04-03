@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Sidebar from "../components/layout/Sidebar";
-import { workspaceColors, dashboardColors } from "../styles/colors";
+import { workspaceColors, StudySessionColors } from "../styles/colors";
 import {
   generateSummary,
   generateQuiz,
@@ -189,7 +189,7 @@ const TabButton: React.FC<TabProps> = ({ label, active, onClick }) => {
           height: isExpanded ? "60vh" : "400px",
           background: "linear-gradient(135deg, #f5f6fa 60%, #e3e6ee 100%)",
           boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
-          border: `1px solid ${dashboardColors.cardBorder}`,
+          border: `1px solid ${StudySessionColors.cardBorder}`,
           display: "flex",
           flexDirection: "column" as const,
           alignItems: "center",
@@ -197,8 +197,8 @@ const TabButton: React.FC<TabProps> = ({ label, active, onClick }) => {
         }),
         generateButtonDynamic: (loading: boolean) => ({
           ...styles.generateButton,
-          backgroundColor: dashboardColors.uploadButtonBackground,
-          color: dashboardColors.uploadButtonText,
+          backgroundColor: StudySessionColors.uploadButtonBackground,
+          color: StudySessionColors.uploadButtonText,
           border: "none",
           fontWeight: 600,
           fontSize: "18px",
@@ -230,7 +230,7 @@ const TabButton: React.FC<TabProps> = ({ label, active, onClick }) => {
         },
         overlayText: {
           fontSize: 20,
-          color: dashboardColors.sectionTitle,
+          color: StudySessionColors.sectionTitle,
           fontWeight: 600,
         },
         outputBox: {
@@ -242,7 +242,7 @@ const TabButton: React.FC<TabProps> = ({ label, active, onClick }) => {
           top: 18,
           right: 18,
           background: "#f5f6fa",
-          border: `1px solid ${dashboardColors.cardBorder}`,
+          border: `1px solid ${StudySessionColors.cardBorder}`,
           borderRadius: "50%",
           width: 38,
           height: 38,
@@ -262,21 +262,21 @@ const TabButton: React.FC<TabProps> = ({ label, active, onClick }) => {
     title: {
       fontSize: "32px",
       marginBottom: "24px",
-      color: dashboardColors.title,
+      color: StudySessionColors.title,
       textAlign: "left" as const,
     },
 
     subtitle: {
       fontSize: "18px",
       marginBottom: "24px",
-      color: dashboardColors.subtitle,
+      color: StudySessionColors.subtitle,
       textAlign: "left" as const,
     },
   
     main: {
       flex: 1,
       padding: "40px",
-      background: `linear-gradient(135deg, ${dashboardColors.pageGradientStart}, ${dashboardColors.pageGradientEnd})`,
+      background: `linear-gradient(135deg, ${StudySessionColors.pageGradientStart}, ${StudySessionColors.pageGradientEnd})`,
     },
   
     tabs: {
@@ -302,20 +302,20 @@ const TabButton: React.FC<TabProps> = ({ label, active, onClick }) => {
       border: "none",
       cursor: "pointer",
       fontWeight: 600,
-      color: dashboardColors.sectionTitle,
+      color: StudySessionColors.sectionTitle,
       transition: "all 0.2s ease",
     },
   
     contentBox: {
       marginTop: "30px",
-      border: `1px solid ${dashboardColors.cardBorder}`,
+      border: `1px solid ${StudySessionColors.cardBorder}`,
       borderRadius: "16px",
       height: "400px",
       maxHeight: "80vh",
       display: "flex",
       justifyContent: "flex-start" as const,
       alignItems: "flex-start" as const,
-      backgroundColor: dashboardColors.cardBackground,
+      backgroundColor: StudySessionColors.cardBackground,
       boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
       padding: "20px",
       overflowY: "auto" as const,
@@ -324,7 +324,7 @@ const TabButton: React.FC<TabProps> = ({ label, active, onClick }) => {
   
     contentText: {
       fontSize: "18px",
-      color: dashboardColors.textareaText,
+      color: StudySessionColors.textareaText,
       width: "100%",
       whiteSpace: "pre-wrap" as const,
       textAlign: "left" as const,

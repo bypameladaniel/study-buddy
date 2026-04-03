@@ -1,5 +1,5 @@
 import React from "react";
-import { dashboardColors } from "../../styles/colors";
+import { StudySessionColors } from "../../styles/colors";
 import StudyCard from "./StudyCard";
 
 const ContinueStudyingSection: React.FC = () => {
@@ -23,11 +23,11 @@ const styles: { [key: string]: React.CSSProperties } = {
   sectionTitle: {
     fontSize: "23px",
     marginBottom: "10px",
-    color: dashboardColors.sectionTitle,
+    color: StudySessionColors.sectionTitle,
   },
   subtitle: {
     fontSize: "14px",
-    color: dashboardColors.subtitle,
+    color: StudySessionColors.subtitle,
     marginBottom: "15px",
   },
   cardGrid: {

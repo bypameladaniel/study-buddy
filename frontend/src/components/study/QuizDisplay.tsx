@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { parseQuiz } from "../../LLMServices/parsers/quizParser";
-import { dashboardColors } from "../../styles/colors";
+import { StudySessionColors } from "../../styles/colors";
 
 interface Props {
   rawData: string;
@@ -16,7 +16,7 @@ const QuizDisplay: React.FC<Props> = ({ rawData }) => {
   const [showResult, setShowResult] = useState(false);
 
   if (!quiz) {
-    return <div style={{ color: dashboardColors.sectionTitle }}>{rawData}</div>;
+    return <div style={{ color: StudySessionColors.sectionTitle }}>{rawData}</div>;
   }
 
   const question = quiz.questions[currentIndex];
@@ -46,8 +46,8 @@ const QuizDisplay: React.FC<Props> = ({ rawData }) => {
 
   if (showResult) {
     return (
-      <div style={{ color: dashboardColors.sectionTitle }}>
-        <h2 style={{ color: dashboardColors.title }}>Quiz Complete 🎉</h2>
+      <div style={{ color: StudySessionColors.sectionTitle }}>
+        <h2 style={{ color: StudySessionColors.title }}>Quiz Complete 🎉</h2>
         <p>
           Score: {score} / {quiz.questions.length}
         </p>
@@ -57,7 +57,7 @@ const QuizDisplay: React.FC<Props> = ({ rawData }) => {
 
   return (
     <div style={{ width: "100%", textAlign: "left" }}>
-      <h2 style={{ color: dashboardColors.title }}>{quiz.title}</h2>
+      <h2 style={{ color: StudySessionColors.title }}>{quiz.title}</h2>
 
       <p style={{ fontWeight: 600 }}>
         Q{currentIndex + 1}: {question.question}
@@ -78,7 +78,7 @@ const QuizDisplay: React.FC<Props> = ({ rawData }) => {
                   selectedOption === opt ? "#d0e6ff" : "white",
                 cursor: "pointer",
                 textAlign: "left",
-                color: dashboardColors.sectionTitle,
+                color: StudySessionColors.sectionTitle,
                 marginTop: "4px",
                 maxWidth: "800px",
                 fontSize: "16px",
@@ -102,7 +102,7 @@ const QuizDisplay: React.FC<Props> = ({ rawData }) => {
             borderRadius: "8px",
             border: "1px solid #ccc",
             backgroundColor: "white",
-            color: dashboardColors.sectionTitle,
+            color: StudySessionColors.sectionTitle,
           }}
         />
       )}
@@ -114,7 +114,7 @@ const QuizDisplay: React.FC<Props> = ({ rawData }) => {
           marginTop: "20px",
           padding: "10px 16px",
           borderRadius: "10px",
-          backgroundColor: dashboardColors.title,
+          backgroundColor: StudySessionColors.title,
           color: "white",
           border: "none",
           cursor: "pointer",

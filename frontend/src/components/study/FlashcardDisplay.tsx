@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo } from "react";
 import { parseFlashcards } from "../../LLMServices/parsers/flashcardParser";
-import { dashboardColors } from "../../styles/colors";
+import { StudySessionColors } from "../../styles/colors";
 
 interface FlashcardDisplayProps {
   rawData: string;
@@ -13,7 +13,7 @@ const FlashcardDisplay: React.FC<FlashcardDisplayProps> = ({ rawData }) => {
   const [revealed, setRevealed] = useState(false);
 
   if (!flashcards.length) {
-    return <div style={{ color: dashboardColors.sectionTitle }}>No flashcards to display.</div>;
+    return <div style={{ color: StudySessionColors.sectionTitle }}>No flashcards to display.</div>;
   }
 
   const card = flashcards[current];
@@ -37,7 +37,7 @@ const FlashcardDisplay: React.FC<FlashcardDisplayProps> = ({ rawData }) => {
           <button
             style={{
               ...styles.showButton,
-              backgroundColor: dashboardColors.title,
+              backgroundColor: StudySessionColors.title,
               color: "white",
               border: "none",
               borderRadius: "10px",
@@ -63,7 +63,7 @@ const FlashcardDisplay: React.FC<FlashcardDisplayProps> = ({ rawData }) => {
           disabled={current === 0}
           style={{
             ...styles.navButton,
-            backgroundColor: dashboardColors.title,
+            backgroundColor: StudySessionColors.title,
             color: "white",
             border: "none",
             borderRadius: "10px",
@@ -83,7 +83,7 @@ const FlashcardDisplay: React.FC<FlashcardDisplayProps> = ({ rawData }) => {
           disabled={current === flashcards.length - 1}
           style={{
             ...styles.navButton,
-            backgroundColor: dashboardColors.title,
+            backgroundColor: StudySessionColors.title,
             color: "white",
             border: "none",
             borderRadius: "10px",
@@ -113,7 +113,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   card: {
     background: "#f8fafc",
-    border: `1px solid ${dashboardColors.cardBorder}`,
+    border: `1px solid ${StudySessionColors.cardBorder}`,
     borderRadius: 12,
     boxShadow: "0 2px 16px #0002",
     padding: 40,
@@ -140,9 +140,9 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   hideButton: {
     marginTop: 12,
-    background: dashboardColors.cancelButtonBackground,
-    color: dashboardColors.cancelButtonText,
-    border: `1px solid ${dashboardColors.cancelButtonBorder}`,
+    background: StudySessionColors.cancelButtonBackground,
+    color: StudySessionColors.cancelButtonText,
+    border: `1px solid ${StudySessionColors.cancelButtonBorder}`,
     borderRadius: 8,
     padding: "6px 18px",
     fontWeight: 500,

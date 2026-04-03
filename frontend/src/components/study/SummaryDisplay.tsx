@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { parseSummary } from "../../LLMServices/parsers/summaryParser";
-import { dashboardColors } from "../../styles/colors";
+import { StudySessionColors } from "../../styles/colors";
 
 interface SummaryDisplayProps {
   rawData: string;
@@ -11,7 +11,7 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({ rawData }) => {
 
   if (!parsedData) {
     return (
-      <div style={{ color: dashboardColors.sectionTitle, width: "100%" }}>
+      <div style={{ color: StudySessionColors.sectionTitle, width: "100%" }}>
         {rawData}
       </div>
     );
@@ -22,7 +22,7 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({ rawData }) => {
       style={{
         width: "100%",
         textAlign: "left",
-        color: dashboardColors.sectionTitle,
+        color: StudySessionColors.sectionTitle,
       }}
     >
       {/* Title */}
@@ -31,7 +31,7 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({ rawData }) => {
           marginTop: 0,
           marginBottom: "16px",
           fontSize: "24px",
-          color: dashboardColors.title,
+          color: StudySessionColors.title,
         }}
       >
         {parsedData.title}
@@ -45,15 +45,15 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({ rawData }) => {
             style={{
               padding: "12px 14px",
               borderRadius: "10px",
-              backgroundColor: dashboardColors.cardBackground,
-              border: `1px solid ${dashboardColors.cardBorder}`,
+              backgroundColor: StudySessionColors.cardBackground,
+              border: `1px solid ${StudySessionColors.cardBorder}`,
             }}
           >
             <h3
               style={{
                 margin: "0 0 8px 0",
                 fontSize: "18px",
-                color: dashboardColors.subtitle,
+                color: StudySessionColors.subtitle,
               }}
             >
               {section.heading}
@@ -64,7 +64,7 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({ rawData }) => {
                 margin: 0,
                 fontSize: "16px",
                 lineHeight: "1.6",
-                color: dashboardColors.sectionTitle,
+                color: StudySessionColors.sectionTitle,
               }}
             >
               {section.content}

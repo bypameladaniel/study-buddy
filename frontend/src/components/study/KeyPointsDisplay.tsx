@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { parseKeyPoints } from "../../LLMServices/parsers/keypointsParser";
-import { dashboardColors } from "../../styles/colors";
+import { StudySessionColors } from "../../styles/colors";
 
 interface KeyPointsDisplayProps {
   rawData: string;
@@ -11,20 +11,20 @@ const KeyPointsDisplay: React.FC<KeyPointsDisplayProps> = ({ rawData }) => {
 
   if (!parsedData) {
     return (
-      <div style={{ color: dashboardColors.sectionTitle }}>
+      <div style={{ color: StudySessionColors.sectionTitle }}>
         {rawData}
       </div>
     );
   }
 
   return (
-    <div style={{ width: "100%", textAlign: "left", color: dashboardColors.sectionTitle }}>
+    <div style={{ width: "100%", textAlign: "left", color: StudySessionColors.sectionTitle }}>
       <h2
         style={{
           marginTop: 0,
           marginBottom: "12px",
           fontSize: "24px",
-          color: dashboardColors.title, 
+          color: StudySessionColors.title, 
         }}
       >
         {parsedData.title}
@@ -35,7 +35,7 @@ const KeyPointsDisplay: React.FC<KeyPointsDisplayProps> = ({ rawData }) => {
           marginBottom: "20px",
           fontSize: "16px",
           fontStyle: "italic",
-          color: dashboardColors.subtitle, 
+          color: StudySessionColors.subtitle, 
           opacity: 1, 
         }}
       >
@@ -49,7 +49,7 @@ const KeyPointsDisplay: React.FC<KeyPointsDisplayProps> = ({ rawData }) => {
             style={{
               marginBottom: "12px",
               lineHeight: "1.5",
-              color: dashboardColors.sectionTitle,
+              color: StudySessionColors.sectionTitle,
             }}
           >
             {point}

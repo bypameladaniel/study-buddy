@@ -1,8 +1,8 @@
 /** Apple-inspired: cool grays + system blue */
-export const dashboardColors = {
+export const StudySessionColors = {
   pageBackground: "#f5f5f7",
   pageGradientStart: "#fbfbfd",
-  pageGradientEnd: "#e8eef5",
+  pageGradientEnd: "#e3f0ff",
   cardBackground: "#ffffff",
   studyCardBackground: "#f5f7fa",
   textareaBackground: "#fafbfc",
@@ -41,7 +41,7 @@ export const dashboardColors = {
 export const workspaceColors = {
   tabBackground: "#e8ecf2",
   tabInactive: "#f2f4f7",
-  tabActive: dashboardColors.cardBackground,
+  tabActive: StudySessionColors.cardBackground,
 
   generateButtonBackground: "#007aff",
 

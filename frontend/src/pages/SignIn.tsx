@@ -128,7 +128,7 @@ export default function SignIn() {
     setIsLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/dashboard");
+      navigate("/MyLibrary");
     } catch (err: unknown) {
       setPassword("");
       notify("Invalid email or password", true);
@@ -141,7 +141,7 @@ export default function SignIn() {
     setMessage("");
     try {
       await signInWithPopup(auth, googleProvider);
-      navigate("/dashboard");
+      navigate("/StudySession");
     } catch {
       notify("Google sign-in failed", true);
     }
