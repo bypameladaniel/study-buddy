@@ -20,9 +20,7 @@ const QuizDisplay: React.FC<Props> = ({ rawData }) => {
 
   if (!quiz) {
     return (
-      <div style={{ color: StudySessionColors.sectionTitle }}>
-        {rawData}
-      </div>
+      <div style={{ color: StudySessionColors.sectionTitle }}>{rawData}</div>
     );
   }
 
@@ -42,10 +40,9 @@ const QuizDisplay: React.FC<Props> = ({ rawData }) => {
         question.correctAnswer.trim().toLowerCase();
     }
 
-    const updatedAnswers = [
-      ...submittedAnswers,
-      { userAnswer, isCorrect },
-    ];
+    const updatedAnswers = [...submittedAnswers];
+    updatedAnswers[currentIndex] = { userAnswer, isCorrect };
+    setSubmittedAnswers(updatedAnswers);
 
     setSubmittedAnswers(updatedAnswers);
 
@@ -61,6 +58,25 @@ const QuizDisplay: React.FC<Props> = ({ rawData }) => {
     } else {
       setShowResult(true);
     }
+  };
+
+  const handleBack = () => {
+    if (currentIndex === 0) return;
+
+    const prevIndex = currentIndex - 1;
+    const prevAnswer = submittedAnswers[prevIndex]?.userAnswer || "";
+
+    const prevQuestion = quiz.questions[prevIndex];
+
+    if (prevQuestion.type === "multiple-choice") {
+      setSelectedOption(prevAnswer);
+      setShortAnswer("");
+    } else {
+      setShortAnswer(prevAnswer);
+      setSelectedOption("");
+    }
+
+    setCurrentIndex(prevIndex);
   };
 
   if (showResult) {
@@ -93,7 +109,9 @@ const QuizDisplay: React.FC<Props> = ({ rawData }) => {
               <p
                 style={{
                   ...styles.resultText,
-                  color: submittedAnswers[index]?.isCorrect ? "#2e7d32" : "#c62828",
+                  color: submittedAnswers[index]?.isCorrect
+                    ? "#2e7d32"
+                    : "#c62828",
                 }}
               >
                 {submittedAnswers[index]?.isCorrect ? "Correct" : "Incorrect"}
@@ -154,21 +172,49 @@ const QuizDisplay: React.FC<Props> = ({ rawData }) => {
         />
       )}
 
-      <button
-        onClick={handleNext}
-        style={{
-          marginTop: "20px",
-          padding: "10px 16px",
-          borderRadius: "10px",
-          backgroundColor: StudySessionColors.title,
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-          fontSize: "16px",
-        }}
-      >
-        Next Question →
-      </button>
+      <div
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    marginTop: "20px",
+    width: "100%",
+    maxWidth: "800px",
+  }}
+>
+  {/* Back button (left) */}
+  <button
+    onClick={handleBack}
+    disabled={currentIndex === 0}
+    style={{
+      padding: "10px 16px",
+      borderRadius: "10px",
+      backgroundColor: "#ccc",
+      color: "black",
+      border: "none",
+      cursor: currentIndex === 0 ? "not-allowed" : "pointer",
+      opacity: currentIndex === 0 ? 0.6 : 1,
+      fontSize: "16px",
+    }}
+  >
+    ← Back
+  </button>
+
+  {/* Next button (right) */}
+  <button
+    onClick={handleNext}
+    style={{
+      padding: "10px 16px",
+      borderRadius: "10px",
+      backgroundColor: StudySessionColors.title,
+      color: "white",
+      border: "none",
+      cursor: "pointer",
+      fontSize: "16px",
+    }}
+  >
+    Next Question →
+  </button>
+</div>
 
       <p style={{ marginTop: "12px", opacity: 0.7 }}>
         Question {currentIndex + 1} / {quiz.questions.length}
