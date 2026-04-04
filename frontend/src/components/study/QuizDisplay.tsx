@@ -25,6 +25,7 @@ const QuizDisplay: React.FC<Props> = ({ rawData }) => {
   }
 
   const question = quiz.questions[currentIndex];
+  const progress = ((currentIndex + 1) / quiz.questions.length) * 100;
 
   const handleNext = () => {
     let userAnswer = "";
@@ -126,6 +127,20 @@ const QuizDisplay: React.FC<Props> = ({ rawData }) => {
   return (
     <div style={{ width: "100%", textAlign: "left" }}>
       <h2 style={{ color: StudySessionColors.title }}>{quiz.title}</h2>
+
+      <div style={styles.progressWrapper}>
+      <div style={styles.progressBackground}>
+        <div
+          style={{
+            ...styles.progressFill,
+            width: `${progress}%`,
+          }}
+        />
+      </div>
+      <p style={styles.progressText}>
+        Question {currentIndex + 1} of {quiz.questions.length}
+      </p>
+    </div>
 
       <p style={{ fontWeight: 600 }}>
         Q{currentIndex + 1}: {question.question}
@@ -252,6 +267,31 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginTop: "8px",
     fontWeight: 600,
   },
+
+  progressWrapper: {
+  width: "100%",
+  maxWidth: "800px",
+  margin: "16px 0 20px 0",
+},
+progressBackground: {
+  width: "100%",
+  height: "10px",
+  backgroundColor: "#e5e7eb",
+  borderRadius: "999px",
+  overflow: "hidden",
+},
+progressFill: {
+  height: "100%",
+  borderRadius: "999px",
+  backgroundColor: "#0388fc",
+  transition: "width 0.3s ease",
+},
+progressText: {
+  marginTop: "8px",
+  fontSize: "14px",
+  color: StudySessionColors.sectionTitle,
+  opacity: 0.8,
+},
 };
 
 export default QuizDisplay;
