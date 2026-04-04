@@ -130,24 +130,9 @@ const StudyWorkspace: React.FC = () => {
     <div style={{ display: "flex", minHeight: "100vh" }}>
       <Sidebar />
       <div style={styles.main}>
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
-          <div>
-            <h1 style={styles.title}>Study Workspace</h1>
-            <p style={styles.subtitle}>{session?.title || "Untitled Session"}</p>
-          </div>
-          <button
-            type="button"
-            style={styles.doneButton}
-            onClick={handleDone}
-            onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = StudySessionColors.uploadButtonHover;
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = StudySessionColors.uploadButtonBackground;
-            }}
-          >
-            Done
-          </button>
+        <div>
+          <h1 style={styles.title}>Study Workspace</h1>
+          <p style={styles.subtitle}>{session?.title || "Untitled Session"}</p>
         </div>
 
         {/* Tabs */}
@@ -230,6 +215,22 @@ const StudyWorkspace: React.FC = () => {
               alt={isExpanded ? "Minimize" : "Fullscreen"}
               style={styles.expandIconImg}
             />
+          </button>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 24 }}>
+          <button
+            type="button"
+            style={styles.doneButton}
+            onClick={handleDone}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = StudySessionColors.uploadButtonHover;
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = StudySessionColors.uploadButtonBackground;
+            }}
+          >
+            Done
           </button>
         </div>
       </div>
@@ -352,7 +353,7 @@ const styles = {
     cursor: "pointer",
     transition: "background-color 0.15s ease",
     boxShadow: "0 4px 18px rgba(0, 122, 255, 0.22)",
-    marginTop: 8,
+    marginTop: 24,
   },
   errorText: {
     color: StudySessionColors.deleteButtonText,
