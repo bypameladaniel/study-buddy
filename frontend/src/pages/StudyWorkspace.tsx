@@ -128,6 +128,35 @@ const StudyWorkspace: React.FC = () => {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
+
+      {isExpanded && (
+  <div style={styles.fullscreenOverlay}>
+    <div style={styles.modalContent}>
+      {/* Close button */}
+      <button
+        onClick={() => setIsExpanded(false)}
+        style={styles.closeButton}
+      >
+        ✕
+      </button>
+
+      {/* Your content */}
+      {!loading && outputs[activeTab] && (
+        <div style={styles.outputBox}>
+          {activeTab === "summary" ? (
+            <SummaryDisplay rawData={outputs.summary} />
+          ) : activeTab === "keypoints" ? (
+            <KeyPointsDisplay rawData={outputs.keypoints} />
+          ) : activeTab === "quiz" ? (
+            <QuizDisplay rawData={outputs.quiz} />
+          ) : activeTab === "flashcards" ? (
+            <FlashcardDisplay rawData={outputs.flashcards} />
+          ) : null}
+        </div>
+      )}
+    </div>
+  </div>
+)}
       <Sidebar />
       <div style={styles.main}>
         <div>
@@ -432,4 +461,43 @@ const styles = {
     fontSize: "16px",
     backgroundColor: workspaceColors.generateButtonBackground,
   },
+
+  fullscreenOverlay: {
+  position: "fixed" as const,
+  top: 0,
+  left: 0,
+  width: "100vw",
+  height: "100vh",
+  background: "rgba(0, 0, 0, 0.4)", // dark overlay
+  backdropFilter: "blur(6px)", // 🔥 blur effect
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  zIndex: 999,
+},
+
+modalContent: {
+  width: "90%",
+  maxWidth: "1000px",
+  height: "80vh",
+  background: "#f8fafc",
+  borderRadius: "16px",
+  padding: "24px",
+  boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
+  overflowY: "auto" as const,
+  position: "relative" as const,
+},
+
+closeButton: {
+  position: "absolute" as const,
+  top: 16,
+  right: 16,
+  background: "#eee",
+  border: "none",
+  borderRadius: "50%",
+  width: 36,
+  height: 36,
+  cursor: "pointer",
+  fontSize: "18px",
+},
 };
