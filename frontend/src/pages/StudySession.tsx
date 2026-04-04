@@ -1,17 +1,17 @@
 import React from "react";
-import ContinueStudyingSection from "../components/dashboard/ContinueStudyingSection";
-import DashboardHeader from "../components/dashboard/DashboardHeader";
-import GenerateStudySessionCard from "../components/dashboard/GenerateStudySessionCard";
+import ContinueStudyingSection from "../components/studySession/ContinueStudyingSection";
+import StudySessionHeader from "../components/studySession/StudySessionHeader";
+import GenerateStudySessionCard from "../components/studySession/GenerateStudySessionCard";
 import Sidebar from "../components/layout/Sidebar";
-import { dashboardColors } from "../styles/colors";
+import { StudySessionColors } from "../styles/colors";
 
-const Dashboard: React.FC = () => {
+const StudySession: React.FC = () => {
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
       <Sidebar />
       <div style={styles.container}>
         <div style={styles.contentWrap}>
-          <DashboardHeader />
+          <StudySessionHeader/>
           <GenerateStudySessionCard />
           <ContinueStudyingSection />
         </div>
@@ -20,7 +20,7 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default StudySession;
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
@@ -28,18 +28,18 @@ const styles: { [key: string]: React.CSSProperties } = {
     paddingBottom: "30px",
     paddingLeft: "32px",
     paddingRight: "32px",
-    backgroundColor: dashboardColors.pageBackground,
-    backgroundImage: `linear-gradient(180deg, ${dashboardColors.pageGradientStart} 0%, ${dashboardColors.pageGradientEnd} 100%)`,
+    backgroundColor: StudySessionColors.pageBackground,
+    backgroundImage: `linear-gradient(180deg, ${StudySessionColors.pageGradientStart} 0%, ${StudySessionColors.pageGradientEnd} 100%)`,
     minHeight: "100vh",
     fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif",
-    color: dashboardColors.title,
+    color: StudySessionColors.title,
     flex: 1,
     width: "100%",
     boxSizing: "border-box",
   },
   contentWrap: {
     width: "100%",
-    maxWidth: "min(1300px, 100%)",
-    margin: "0 auto",  
+    maxWidth: "min(1100px, 100%)",
+    margin: "0 auto",
   },
 };

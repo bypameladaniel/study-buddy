@@ -1,12 +1,16 @@
 import Sidebar from "../components/layout/Sidebar";
-import React, { useState } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { dashboardColors, workspaceColors } from "../styles/colors";
+import { StudySessionColors } from "../styles/colors";
 import { useUserProfile } from "../hooks/useUserProfile";
-import mockProfile from "../assets/default-pfp.jpeg";
 import editPencil from "../assets/edit-pencil.svg";
+import defaultProfilePhoto from "../assets/default-pfp.jpeg";
 import { auth } from "../config/firebase";
 import { deleteUser } from "firebase/auth";
+
+type Feedback = { kind: "success" | "error"; text: string };
+
+const DELETE_PHRASE = "DELETE";
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
@@ -15,7 +19,14 @@ const Profile: React.FC = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
+  const [feedback, setFeedback] = useState<Feedback | null>(null);
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deletePhrase, setDeletePhrase] = useState("");
+  const [deleteBusy, setDeleteBusy] = useState(false);
+  const [deleteModalError, setDeleteModalError] = useState<string | null>(null);
+
+  const confirmInputRef = useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     if (profile) {
@@ -24,16 +35,57 @@ const Profile: React.FC = () => {
     }
   }, [profile]);
 
+  useEffect(() => {
+    if (!deleteModalOpen) return;
+    document.body.style.overflow = "hidden";
+    setDeletePhrase("");
+    setDeleteModalError(null);
+    const t = window.setTimeout(() => confirmInputRef.current?.focus(), 50);
+    return () => {
+      document.body.style.overflow = "";
+      window.clearTimeout(t);
+    };
+  }, [deleteModalOpen]);
+
+  useEffect(() => {
+    if (!deleteModalOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && !deleteBusy) {
+        setDeleteModalOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [deleteModalOpen, deleteBusy]);
+
+  const isDirty = useMemo(() => {
+    if (!profile) return false;
+    return (
+      firstName.trim() !== (profile.firstName || "").trim() ||
+      lastName.trim() !== (profile.lastName || "").trim()
+    );
+  }, [profile, firstName, lastName]);
+
+  const displayName = [profile?.firstName, profile?.lastName].filter(Boolean).join(" ");
+  const deletePhraseOk = deletePhrase.trim() === DELETE_PHRASE;
+
+  const scrollToNameEditor = () => {
+    document.getElementById("profile-name-section")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setMessage("");
+    setFeedback(null);
 
     try {
-      await saveProfile(firstName, lastName);
-      setMessage("Profile updated!");
+      await saveProfile(firstName.trim(), lastName.trim());
+      setFeedback({ kind: "success", text: "Profile updated." });
     } catch {
-      setMessage("Failed to update profile.");
+      setFeedback({ kind: "error", text: "Could not update profile. Try again." });
     }
 
     setSaving(false);
@@ -42,35 +94,47 @@ const Profile: React.FC = () => {
   const handleCancel = () => {
     setFirstName(profile?.firstName || "");
     setLastName(profile?.lastName || "");
-    setMessage("");
+    setFeedback(null);
   };
 
-  const handleDeleteAccount = async () => {
+  const openDeleteModal = () => {
+    setDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    if (deleteBusy) return;
+    setDeleteModalOpen(false);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deletePhraseOk) return;
     if (!auth.currentUser) {
-      setMessage("No user is currently signed in.");
+      setDeleteModalError("No user is signed in.");
       return;
     }
 
-    if (
-      !window.confirm(
-        "Are you sure you want to delete your account? This action cannot be undone."
-      )
-    ) {
-      return;
-    }
+    setDeleteBusy(true);
+    setDeleteModalError(null);
 
     try {
       await deleteUser(auth.currentUser);
-      setMessage("Account deleted. Redirecting...");
-      setTimeout(() => {
-        navigate("/");
-      }, 1000);
-    } catch (err: any) {
-      if (err.code === "auth/requires-recent-login") {
-        setMessage("Please sign out and sign in again before deleting your account.");
+      setDeleteModalOpen(false);
+      setFeedback({ kind: "success", text: "Account deleted. Redirecting…" });
+      setTimeout(() => navigate("/"), 1000);
+    } catch (err: unknown) {
+      const code =
+        typeof err === "object" && err !== null && "code" in err
+          ? String((err as { code?: string }).code)
+          : "";
+      if (code === "auth/requires-recent-login") {
+        setDeleteModalError(
+          "For security, sign out and sign in again, then try deleting your account."
+        );
       } else {
-        setMessage("Failed to delete account.");
+        setDeleteModalError("Something went wrong. Please try again.");
       }
+    } finally {
+      setDeleteBusy(false);
     }
   };
 
@@ -78,9 +142,12 @@ const Profile: React.FC = () => {
     return (
       <div style={styles.page}>
         <Sidebar />
-        <div style={styles.centerContent}>
-          <p>Loading...</p>
-        </div>
+        <main style={styles.main}>
+          <div style={styles.loadingCard} aria-busy="true" aria-live="polite">
+            <div style={styles.spinner} />
+            <p style={styles.loadingText}>Loading profile…</p>
+          </div>
+        </main>
       </div>
     );
   }
@@ -89,128 +156,282 @@ const Profile: React.FC = () => {
     <div style={styles.page}>
       <Sidebar />
 
-      <div style={styles.centerContent}>
-        <form onSubmit={handleSave} style={styles.form}>
-          <h2 style={styles.title}>Profile Information</h2>
+      <main style={styles.main}>
+        <div style={styles.contentWrap}>
+          <header style={styles.pageHeader}>
+            <h1 style={styles.pageTitle}>Profile</h1>
+            <p style={styles.pageSubtitle}>
+              Your account overview and settings.
+            </p>
+          </header>
 
-          <div style={styles.avatarWrapper}>
-            <div style={styles.avatarContainer}>
-              <img src={mockProfile} alt="Profile" style={styles.avatarImage} />
-            </div>
-
-            <img
-              src={editPencil}
-              alt="Edit"
-              style={styles.editPencil}
-            />
-          </div>
-
-          {(profile?.firstName || profile?.lastName) && (
-            <div style={styles.fullName}>
-              {[profile?.firstName, profile?.lastName].filter(Boolean).join(" ")}
-            </div>
-          )}
-
-          <div style={styles.fieldsWrapper}>
-            <label style={styles.label}>First Name</label>
-            <input
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              style={styles.input}
-              required
-            />
-
-            <label style={styles.label}>Last Name</label>
-            <input
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              style={styles.input}
-              required
-            />
-
-            <label style={styles.label}>Email</label>
-            <input
-              type="email"
-              value={profile?.email || ""}
-              disabled
-              style={styles.disabledInput}
-            />
-          </div>
-
-          <div style={styles.actionsWrapper}>
-            <div style={styles.buttonRow}>
-              <button
-                type="submit"
-                disabled={saving}
-                style={styles.saveButton}
-                onMouseOver={(e) => {
-                  if (!saving) {
-                    e.currentTarget.style.background =
-                      dashboardColors.uploadButtonHover;
-                    e.currentTarget.style.color =
-                      dashboardColors.uploadButtonText;
-                  }
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.background =
-                    dashboardColors.uploadButtonBackground;
-                  e.currentTarget.style.color =
-                    dashboardColors.uploadButtonText;
-                }}
+          <div style={styles.stack}>
+            <div style={styles.upperGrid}>
+              <section
+                style={styles.identityPanel}
+                aria-labelledby="profile-identity-heading"
               >
-                {saving ? "Saving..." : "Save"}
-              </button>
+                <div style={styles.identityCardColumn}>
+                  <div style={styles.avatarWrap}>
+                    <div style={styles.avatarPhotoRing}>
+                      <img
+                        src={defaultProfilePhoto}
+                        alt=""
+                        style={styles.avatarPhoto}
+                        decoding="async"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      style={styles.avatarEditFab}
+                      onClick={scrollToNameEditor}
+                      title="Edit name in the panel beside this card"
+                      aria-label="Edit name"
+                    >
+                      <img
+                        src={editPencil}
+                        alt=""
+                        style={styles.avatarEditIcon}
+                      />
+                    </button>
+                  </div>
 
+                  <h2 id="profile-identity-heading" style={styles.identityName}>
+                    {displayName || "Your name"}
+                  </h2>
+                  <p style={styles.identityTagline}>StudyBuddy student profile</p>
+
+                  <div style={styles.accountInset}>
+                    <p style={styles.accountInsetTitle}>Account</p>
+                    <div style={styles.accountField}>
+                      <span style={styles.accountFieldLabel}>Email</span>
+                      <span style={styles.accountFieldValue}>
+                        {profile?.email || "—"}
+                      </span>
+                    </div>
+                    <div style={{ ...styles.accountField, marginBottom: 0 }}>
+                      <span style={styles.accountFieldLabel}>Status</span>
+                      <span style={styles.statusPill}>
+                        <span style={styles.statusDot} aria-hidden />
+                        Active
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section
+                id="profile-name-section"
+                style={styles.detailsPanel}
+                aria-labelledby="profile-details-heading"
+              >
+                <h2 id="profile-details-heading" style={styles.sectionHeading}>
+                  Name on Study Buddy
+                </h2>
+                <p style={styles.sectionLead}>
+                  This is shown in the app. It does not change your Google or email login name.
+                </p>
+
+                <form onSubmit={handleSave} style={styles.formInner}>
+                  <div style={styles.nameRow}>
+                    <div style={styles.fieldGroup}>
+                      <label htmlFor="profile-first-name" style={styles.label}>
+                        First name
+                      </label>
+                      <input
+                        id="profile-first-name"
+                        type="text"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        style={styles.input}
+                        autoComplete="given-name"
+                        required
+                      />
+                    </div>
+                    <div style={styles.fieldGroup}>
+                      <label htmlFor="profile-last-name" style={styles.label}>
+                        Last name
+                      </label>
+                      <input
+                        id="profile-last-name"
+                        type="text"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        style={styles.input}
+                        autoComplete="family-name"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ ...styles.fieldGroup, flex: "1 1 100%", minWidth: "100%" }}>
+                    <label htmlFor="profile-email" style={styles.label}>
+                      Sign-in email
+                    </label>
+                    <input
+                      id="profile-email"
+                      type="email"
+                      value={profile?.email || ""}
+                      disabled
+                      style={styles.disabledInput}
+                      autoComplete="email"
+                    />
+                    <p style={styles.fieldHelp}>
+                      Read-only. To use a different email, create a new account.
+                    </p>
+                  </div>
+
+                  {feedback && (
+                    <div
+                      role="status"
+                      style={{
+                        ...styles.feedback,
+                        ...(feedback.kind === "success"
+                          ? styles.feedbackSuccess
+                          : styles.feedbackError),
+                      }}
+                    >
+                      {feedback.text}
+                    </div>
+                  )}
+
+                  <div style={styles.actionsRow}>
+                    <button
+                      type="submit"
+                      disabled={saving || !isDirty}
+                      style={{
+                        ...styles.saveButton,
+                        ...(saving || !isDirty ? styles.buttonDisabled : {}),
+                      }}
+                      onMouseOver={(e) => {
+                        if (!saving && isDirty) {
+                          e.currentTarget.style.background =
+                            StudySessionColors.uploadButtonHover;
+                        }
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.background =
+                          StudySessionColors.uploadButtonBackground;
+                      }}
+                    >
+                      {saving ? "Saving…" : "Save changes"}
+                    </button>
+
+                    <button
+                      type="button"
+                      disabled={saving || !isDirty}
+                      style={{
+                        ...styles.cancelButton,
+                        ...(saving || !isDirty ? styles.secondaryDisabled : {}),
+                      }}
+                      onClick={handleCancel}
+                      onMouseOver={(e) => {
+                        if (!saving && isDirty) {
+                          e.currentTarget.style.background =
+                            StudySessionColors.cancelButtonHover;
+                        }
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.background =
+                          StudySessionColors.cancelButtonBackground;
+                      }}
+                    >
+                      Reset
+                    </button>
+                  </div>
+                </form>
+
+                <div style={styles.detailsDeleteSeparator} aria-hidden />
+
+                <button
+                  type="button"
+                  disabled={saving}
+                  style={styles.deleteButtonCorner}
+                  onClick={openDeleteModal}
+                  onMouseOver={(e) => {
+                    if (!saving) {
+                      e.currentTarget.style.background =
+                        StudySessionColors.deleteButtonHover;
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.background =
+                      StudySessionColors.deleteButtonBackground;
+                  }}
+                >
+                  Delete account
+                </button>
+              </section>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {deleteModalOpen && (
+        <div
+          style={styles.modalRoot}
+          role="presentation"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) closeDeleteModal();
+          }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-dialog-title"
+            aria-describedby="delete-dialog-desc"
+            style={styles.modalDialog}
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <h2 id="delete-dialog-title" style={styles.modalTitle}>
+              Delete your account?
+            </h2>
+            <p id="delete-dialog-desc" style={styles.modalBody}>
+              This permanently removes your Study Buddy account. Your sign-in may still exist with Google or email, but app data tied to this account will be gone. This cannot be undone.
+            </p>
+            <label htmlFor="delete-confirm-input" style={styles.modalLabel}>
+              Type <strong style={styles.modalMono}>{DELETE_PHRASE}</strong> to confirm
+            </label>
+            <input
+              ref={confirmInputRef}
+              id="delete-confirm-input"
+              type="text"
+              autoComplete="off"
+              value={deletePhrase}
+              onChange={(e) => setDeletePhrase(e.target.value)}
+              style={styles.modalInput}
+              placeholder={DELETE_PHRASE}
+              disabled={deleteBusy}
+            />
+            {deleteModalError ? (
+              <p style={styles.modalError} role="alert">
+                {deleteModalError}
+              </p>
+            ) : null}
+            <div style={styles.modalActions}>
               <button
                 type="button"
-                disabled={saving}
-                style={styles.cancelButton}
-                onClick={handleCancel}
-                onMouseOver={(e) => {
-                  if (!saving) {
-                    e.currentTarget.style.background = dashboardColors.cancelButtonHover;
-                  }
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.background = dashboardColors.cancelButtonBackground;
-                }}
+                style={styles.modalCancel}
+                onClick={closeDeleteModal}
+                disabled={deleteBusy}
               >
                 Cancel
               </button>
+              <button
+                type="button"
+                style={{
+                  ...styles.modalConfirm,
+                  ...(!deletePhraseOk || deleteBusy ? styles.modalConfirmDisabled : {}),
+                }}
+                onClick={handleConfirmDelete}
+                disabled={!deletePhraseOk || deleteBusy}
+              >
+                {deleteBusy ? "Deleting…" : "Delete forever"}
+              </button>
             </div>
-
-            <button
-              type="button"
-              disabled={saving}
-              style={styles.deleteButton}
-              onClick={handleDeleteAccount}
-              onMouseOver={(e) => {
-                if (!saving) {
-                  e.currentTarget.style.background = dashboardColors.deleteButtonHover;
-                }
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.background = dashboardColors.deleteButtonBackground;
-              }}
-            >
-              Delete Account
-            </button>
           </div>
-
-          {message && (
-            <div
-              style={{
-                ...styles.message,
-                color: message.includes("updated") ? "green" : "red",
-              }}
-            >
-              {message}
-            </div>
-          )}
-        </form>
-      </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -219,151 +440,464 @@ const styles: { [key: string]: React.CSSProperties } = {
   page: {
     display: "flex",
     minHeight: "100vh",
-    background: `linear-gradient(180deg, ${dashboardColors.pageGradientStart} 0%, ${dashboardColors.pageGradientEnd} 100%)`,
+    fontFamily: '"DM Sans", system-ui, sans-serif',
   },
-  centerContent: {
+  main: {
     flex: 1,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  form: {
-    background: dashboardColors.cardBackground,
-    borderRadius: 16,
-    boxShadow: "0 2px 16px #0001",
-    padding: 36,
-    minWidth: 340,
-    maxWidth: 400,
     width: "100%",
+    boxSizing: "border-box",
+    minHeight: "100vh",
+    paddingTop: 36,
+    paddingBottom: 56,
+    paddingLeft: 36,
+    paddingRight: 36,
+    backgroundColor: StudySessionColors.pageBackground,
+    backgroundImage: `linear-gradient(180deg, ${StudySessionColors.pageGradientStart} 0%, ${StudySessionColors.pageGradientEnd} 100%)`,
+    color: StudySessionColors.title,
+  },
+  contentWrap: {
+    width: "100%",
+    maxWidth: "min(1080px, 100%)",
+    margin: "0 auto",
+  },
+  pageHeader: {
+    marginBottom: 32,
+  },
+  pageTitle: {
+    fontSize: 36,
+    margin: 0,
+    marginBottom: 10,
+    color: StudySessionColors.title,
+    fontWeight: 700,
+    letterSpacing: "-0.03em",
+  },
+  pageSubtitle: {
+    margin: 0,
+    fontSize: 17,
+    lineHeight: 1.55,
+    color: StudySessionColors.subtitle,
+    maxWidth: 560,
+  },
+  stack: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 28,
+  },
+  upperGrid: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 28,
+    alignItems: "stretch",
+  },
+  detailsPanel: {
+    background: StudySessionColors.cardBackground,
+    borderRadius: 20,
+    border: `1px solid ${StudySessionColors.cardBorder}`,
+    boxShadow: StudySessionColors.shadowMd,
+    padding: "32px 34px 72px",  // increased bottom padding so button clears the separator
+    boxSizing: "border-box",
+    flex: "1 1 380px",
+    minWidth: "min(100%, 320px)",
+    position: "relative" as const,
+  },
+  identityPanel: {
+    background: StudySessionColors.cardBackground,
+    borderRadius: 24,
+    border: `1px solid ${StudySessionColors.cardBorder}`,
+    boxShadow: StudySessionColors.shadowMd,
+    padding: "36px 28px 32px",
+    boxSizing: "border-box",
+    flex: "0 1 380px",
+    maxWidth: 400,
+    minWidth: "min(100%, 280px)",
+  },
+  identityCardColumn: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    gap: 24,
+    textAlign: "center",
   },
-  title: {
-    color: dashboardColors.title,
-    marginBottom: 8,
-  },
-  avatarWrapper: {
-    margin: "0 auto 8px auto",
-    marginBottom: 8,
+  avatarWrap: {
     position: "relative",
-    width: 96,
+    width: 124,
+    height: 124,
+    marginBottom: 22,
+    flexShrink: 0,
   },
-  avatarContainer: {
-    width: 96,
-    height: 96,
+  avatarPhotoRing: {
+    width: 124,
+    height: 124,
     borderRadius: "50%",
-    background: workspaceColors.tabBackground,
     overflow: "hidden",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    border: `2px solid ${dashboardColors.cardBorder}`,
+    background: "#e8ecf0",
+    boxShadow: "0 10px 32px rgba(0, 122, 255, 0.22)",
+    border: `3px solid ${StudySessionColors.cardBackground}`,
   },
-  avatarImage: {
+  avatarPhoto: {
     width: "100%",
     height: "100%",
-    objectFit: "cover",
+    objectFit: "cover" as const,
+    objectPosition: "center" as const,
+    display: "block",
   },
-  editPencil: {
+  avatarEditFab: {
     position: "absolute",
-    right: 0,
-    bottom: 0,
-    width: 28,
-    height: 28,
-    background: dashboardColors.cardBackground,
+    right: -2,
+    bottom: -2,
+    width: 36,
+    height: 36,
     borderRadius: "50%",
-    boxShadow: "0 1px 4px #0002",
-    padding: 4,
+    background: "#1d1d1f",
+    border: "3px solid #ffffff",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     cursor: "pointer",
-    border: `1px solid ${dashboardColors.cardBorder}`,
+    padding: 0,
+    boxShadow: StudySessionColors.shadowSm,
   },
-  fullName: {
-    marginTop: -4,
-    marginBottom: 8,
-    textAlign: "center",
-    fontWeight: 600,
-    fontSize: 18,
-    color: dashboardColors.title,
-    letterSpacing: 0.2,
+  avatarEditIcon: {
+    width: 18,
+    height: 18,
+    objectFit: "contain" as const,
+    filter: "brightness(0) invert(1)",
+  },
+  identityName: {
+    margin: 0,
+    fontSize: 22,
+    fontWeight: 700,
+    color: StudySessionColors.title,
+    letterSpacing: "-0.02em",
+    lineHeight: 1.25,
     wordBreak: "break-word",
+    maxWidth: "100%",
   },
-  fieldsWrapper: {
+  identityTagline: {
+    margin: "8px 0 0 0",
+    fontSize: 14,
+    color: StudySessionColors.subtitle,
+    lineHeight: 1.45,
+  },
+  accountInset: {
     width: "100%",
+    marginTop: 26,
+    padding: "18px 18px 16px",
+    background: "#f5f5f7",
+    borderRadius: 16,
+    border: "1px solid rgba(0, 0, 0, 0.06)",
+    textAlign: "left" as const,
+    boxSizing: "border-box" as const,
+  },
+  accountInsetTitle: {
+    margin: "0 0 14px 0",
+    fontSize: 11,
+    fontWeight: 700,
+    letterSpacing: "0.14em",
+    textTransform: "uppercase" as const,
+    color: "#5a7a9a",
+  },
+  accountField: {
+    marginBottom: 14,
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: 4,
+  },
+  accountFieldLabel: {
+    fontSize: 12,
+    color: "#86868b",
+    fontWeight: 500,
+  },
+  accountFieldValue: {
+    fontSize: 15,
+    color: StudySessionColors.title,
+    fontWeight: 500,
+    wordBreak: "break-all" as const,
+  },
+  statusPill: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+    alignSelf: "flex-start",
+    marginTop: 2,
+    padding: "6px 14px",
+    borderRadius: 999,
+    background: "#e8f4ff",
+    color: "#007aff",
+    fontSize: 14,
+    fontWeight: 600,
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: "50%",
+    background: "#007aff",
+    flexShrink: 0,
+  },
+  sectionHeading: {
+    margin: 0,
+    fontSize: 19,
+    fontWeight: 700,
+    color: StudySessionColors.sectionTitle,
+    letterSpacing: "-0.02em",
+  },
+  sectionLead: {
+    margin: "10px 0 22px 0",
+    fontSize: 15,
+    color: StudySessionColors.subtitle,
+    lineHeight: 1.55,
+  },
+  formInner: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 20,
+  },
+  nameRow: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 18,
+  },
+  fieldGroup: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+    flex: "1 1 200px",
+    minWidth: "min(100%, 200px)",
   },
   label: {
-    display: "block",
-    textAlign: "left",
-    fontWeight: 500,
-    marginBottom: 4,
+    fontSize: 13,
+    fontWeight: 600,
+    color: StudySessionColors.sectionTitle,
+    letterSpacing: 0.02,
+  },
+  fieldHelp: {
+    margin: 0,
+    fontSize: 13,
+    color: StudySessionColors.studySubtitle,
+    lineHeight: 1.45,
   },
   input: {
     width: "100%",
-    padding: "8px 12px",
-    borderRadius: 6,
-    border: `1px solid ${dashboardColors.cardBorder}`,
+    boxSizing: "border-box",
+    padding: "12px 14px",
+    borderRadius: 10,
+    border: `1px solid ${StudySessionColors.cardBorder}`,
     fontSize: 16,
-    marginBottom: 8,
     background: "#fff",
+    color: StudySessionColors.title,
+    outline: "none",
   },
   disabledInput: {
     width: "100%",
-    padding: "8px 12px",
-    borderRadius: 6,
-    border: `1px solid ${dashboardColors.cardBorder}`,
+    boxSizing: "border-box",
+    padding: "12px 14px",
+    borderRadius: 10,
+    border: `1px solid ${StudySessionColors.cardBorder}`,
     fontSize: 16,
-    background: dashboardColors.cancelButtonBackground,
-    color: "#888",
-    marginBottom: 8,
+    background: StudySessionColors.cancelButtonBackground,
+    color: StudySessionColors.studySubtitle,
   },
-  actionsWrapper: {
-    width: "100%",
-    marginTop: 8,
+  feedback: {
+    fontSize: 14,
+    padding: "12px 14px",
+    borderRadius: 10,
+    lineHeight: 1.45,
   },
-  buttonRow: {
+  feedbackSuccess: {
+    background: "rgba(13, 128, 80, 0.08)",
+    color: "#0d6b45",
+    border: "1px solid rgba(13, 128, 80, 0.2)",
+  },
+  feedbackError: {
+    background: StudySessionColors.deleteButtonBackground,
+    color: StudySessionColors.deleteButtonText,
+    border: `1px solid ${StudySessionColors.deleteButtonBorder}`,
+  },
+  actionsRow: {
     display: "flex",
+    flexWrap: "wrap",
     gap: 12,
+    marginTop: 4,
   },
   saveButton: {
-    background: dashboardColors.uploadButtonBackground,
-    color: dashboardColors.uploadButtonText,
+    background: StudySessionColors.uploadButtonBackground,
+    color: StudySessionColors.uploadButtonText,
     border: "none",
-    borderRadius: 6,
-    padding: "10px 18px",
+    borderRadius: 10,
+    padding: "13px 22px",
     fontWeight: 600,
-    fontSize: 16,
+    fontSize: 15,
     cursor: "pointer",
-    flex: 1,
-    transition: "background 0.2s",
+    transition: "background 0.15s ease",
+    minWidth: 148,
   },
   cancelButton: {
-    background: dashboardColors.cancelButtonBackground,
-    color: dashboardColors.cancelButtonText,
-    border: `1px solid ${dashboardColors.cancelButtonBorder}`,
-    borderRadius: 6,
-    padding: "10px 18px",
+    background: StudySessionColors.cancelButtonBackground,
+    color: StudySessionColors.cancelButtonText,
+    border: `1px solid ${StudySessionColors.cancelButtonBorder}`,
+    borderRadius: 10,
+    padding: "13px 22px",
     fontWeight: 600,
-    fontSize: 16,
+    fontSize: 15,
     cursor: "pointer",
-    flex: 1,
-    transition: "background 0.2s",
+    transition: "background 0.15s ease",
+    minWidth: 120,
   },
-  deleteButton: {
-    background: dashboardColors.deleteButtonBackground,
-    color: dashboardColors.deleteButtonText,
-    border: `1px solid ${dashboardColors.deleteButtonBorder}`,
-    borderRadius: 6,
-    padding: "10px 18px",
-    fontWeight: 600,
-    fontSize: 16,
-    cursor: "pointer",
+  buttonDisabled: {
+    opacity: 0.5,
+    cursor: "not-allowed",
+  },
+  secondaryDisabled: {
+    opacity: 0.45,
+    cursor: "not-allowed",
+  },
+  detailsDeleteSeparator: {
     width: "100%",
-    marginTop: 16,
-    transition: "background 0.2s",
+    marginTop: 24,
+    marginBottom: 0,
+    border: "none",
+    borderTop: `1px solid ${StudySessionColors.cardBorder}`,
+    boxSizing: "border-box" as const,
   },
-  message: {
-    marginTop: 8,
+  deleteButtonCorner: {
+    position: "absolute" as const,
+    right: 28,
+    bottom: 20,  // sits comfortably inside the expanded bottom padding
+    background: "#fff",
+    color: StudySessionColors.deleteButtonText,
+    border: `1px solid ${StudySessionColors.deleteButtonBorder}`,
+    borderRadius: 10,
+    padding: "10px 16px",
+    fontWeight: 600,
+    fontSize: 14,
+    cursor: "pointer",
+    transition: "background 0.15s ease",
+  },
+  modalRoot: {
+    position: "fixed",
+    inset: 0,
+    zIndex: 1000,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 24,
+    boxSizing: "border-box",
+    background: "rgba(29, 29, 31, 0.42)",
+    backdropFilter: "blur(10px)",
+    WebkitBackdropFilter: "blur(10px)",
+  },
+  modalDialog: {
+    width: "100%",
+    maxWidth: 440,
+    background: StudySessionColors.cardBackground,
+    borderRadius: 20,
+    border: `1px solid ${StudySessionColors.cardBorder}`,
+    boxShadow: StudySessionColors.shadowLg,
+    padding: "28px 28px 24px",
+    boxSizing: "border-box",
+  },
+  modalTitle: {
+    margin: 0,
+    fontSize: 22,
+    fontWeight: 700,
+    color: StudySessionColors.title,
+    letterSpacing: "-0.02em",
+  },
+  modalBody: {
+    margin: "12px 0 20px",
+    fontSize: 15,
+    lineHeight: 1.55,
+    color: StudySessionColors.subtitle,
+  },
+  modalLabel: {
+    display: "block",
+    fontSize: 13,
+    fontWeight: 600,
+    color: StudySessionColors.sectionTitle,
+    marginBottom: 8,
+  },
+  modalMono: {
+    fontFamily: "ui-monospace, monospace",
+    fontWeight: 700,
+    color: StudySessionColors.deleteButtonText,
+  },
+  modalInput: {
+    width: "100%",
+    boxSizing: "border-box",
+    padding: "12px 14px",
+    borderRadius: 10,
+    border: `1px solid ${StudySessionColors.cardBorder}`,
+    fontSize: 16,
+    fontFamily: "ui-monospace, monospace",
+    letterSpacing: "0.04em",
+    marginBottom: 8,
+  },
+  modalError: {
+    margin: "0 0 12px",
+    fontSize: 14,
+    color: StudySessionColors.deleteButtonText,
+    lineHeight: 1.45,
+  },
+  modalActions: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 12,
+    justifyContent: "flex-end",
+    marginTop: 16,
+  },
+  modalCancel: {
+    padding: "11px 18px",
+    borderRadius: 10,
+    border: `1px solid ${StudySessionColors.cancelButtonBorder}`,
+    background: StudySessionColors.cancelButtonBackground,
+    color: StudySessionColors.cancelButtonText,
+    fontWeight: 600,
+    fontSize: 15,
+    cursor: "pointer",
+    fontFamily: "inherit",
+  },
+  modalConfirm: {
+    padding: "11px 18px",
+    borderRadius: 10,
+    border: `1px solid ${StudySessionColors.deleteButtonText}`,
+    background: StudySessionColors.deleteButtonText,
+    color: "#fff",
+    fontWeight: 600,
+    fontSize: 15,
+    cursor: "pointer",
+    fontFamily: "inherit",
+  },
+  modalConfirmDisabled: {
+    opacity: 0.45,
+    cursor: "not-allowed",
+  },
+  loadingCard: {
+    background: StudySessionColors.cardBackground,
+    borderRadius: 16,
+    border: `1px solid ${StudySessionColors.cardBorder}`,
+    boxShadow: StudySessionColors.shadowMd,
+    padding: 32,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 14,
+    maxWidth: 280,
+    marginTop: 48,
+  },
+  spinner: {
+    width: 28,
+    height: 28,
+    border: `3px solid ${StudySessionColors.cardBorder}`,
+    borderTopColor: StudySessionColors.sectionTitle,
+    borderRadius: "50%",
+    animation: "profile-spin 0.75s linear infinite",
+  },
+  loadingText: {
+    margin: 0,
+    fontSize: 14,
+    color: StudySessionColors.subtitle,
   },
 };
 

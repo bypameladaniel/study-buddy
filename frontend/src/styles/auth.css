@@ -16,14 +16,14 @@ html, body, #root {
 
 /*Variables*/
 :root {
-  --color-primary:      #4a90d9;
-  --color-dark:         #1a1a2e;
-  --color-dark-hover:   #2d2d4e;
-  --color-text:         #374151;
-  --color-muted:        #6b7280;
-  --color-subtle:       #9ca3af;
-  --color-border:       #e5e7eb;
-  --color-border-hover: #d1d5db;
+  --color-primary:      #007aff;
+  --color-dark:         #1d1d1f;
+  --color-dark-hover:   #424245;
+  --color-text:         #424245;
+  --color-muted:        #6e6e73;
+  --color-subtle:       #86868b;
+  --color-border:       #d2d2d7;
+  --color-border-hover: #c5c9d0;
   --color-white:        #ffffff;
   --font:               'DM Sans', sans-serif;
   --radius-sm:          8px;
@@ -34,7 +34,7 @@ html, body, #root {
 /*Page layout*/
 .page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f0f4f8 0%, #e8edf5 100%);
+  background: linear-gradient(165deg, #fbfbfd 0%, #eef2f7 50%, #e3f0ff 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -106,10 +106,11 @@ html, body, #root {
   background: var(--color-white);
   border-radius: var(--radius-lg);
   padding: 40px 36px;
+  border: 1px solid var(--color-border);
   /* fluid: never wider than 450px, never wider than its container */
   width: min(450px, 100%);
   flex-shrink: 0;
-  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 48px rgba(0, 55, 90, 0.1);
 }
 
 .card__title {
@@ -215,6 +216,31 @@ html, body, #root {
 
 .password-rule__icon--met {
   color: #16a34a;
+}
+
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper .field__input {
+  width: 100%;
+  padding-right: 40px; /* space for icon */
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #666;
+}
+
+.password-toggle:hover {
+  color: #000;
 }
 
 /*Remember me*/
