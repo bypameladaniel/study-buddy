@@ -7,13 +7,13 @@ import type { StudySession } from "../../types/session";
 const ContinueStudyingSection: React.FC = () => {
   const [sessions, setSessions] = useState<StudySession[]>([]);
 
-  useEffect(() => {
-    const all = getSessions()
-      .filter((s) => !s.isCompleted)
-      .sort((a, b) => b.lastAccessedAt - a.lastAccessedAt)
-      .slice(0, 4);
-    setSessions(all);
-  }, []);
+useEffect(() => {
+  const all = getSessions()
+    .sort((a, b) => b.lastAccessedAt - a.lastAccessedAt) // most recent first
+    .slice(0, 2); // only take 2
+
+  setSessions(all);
+}, []);
 
   return (
     <div style={styles.section}>
