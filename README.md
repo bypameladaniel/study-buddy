@@ -43,7 +43,7 @@ VITE_GROQ_API_KEY=
    - Generate API key
    - Paste API key into .env file<br>
    ⚠️Track usage and models on the Groq Dashboard
-5. Navigate to frontend directory `studyBuddy/frontend`
+5. Navigate to frontend directory `study-buddy/frontend`
 6. Install dependencies `npm i`
 7. Run application `npm run dev`
 8. Open browser to `http://localhost:5173`
