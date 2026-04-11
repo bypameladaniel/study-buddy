@@ -35,6 +35,12 @@ export function createSessionId(): string {
   return `session_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
 }
 
+export const deleteSession = (id: string) => {
+  const sessions = getSessions();
+  const updated = sessions.filter((s) => s.id !== id);
+  localStorage.setItem("sessions", JSON.stringify(updated));
+};
+
 export function formatLastAccessed(timestamp: number): string {
   const diffMs = Date.now() - timestamp;
   const diffSec = Math.floor(diffMs / 1000);

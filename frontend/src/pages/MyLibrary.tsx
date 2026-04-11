@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../components/layout/Sidebar";
 import { StudySessionColors } from "../styles/colors";
 import StudyCard from "../components/studySession/StudyCard";
-import { getSessions } from "../utils/sessionStorage";
+import { getSessions, deleteSession } from "../utils/sessionStorage";
 import type { StudySession } from "../types/session";
 
 const MyLibrary: React.FC = () => {
@@ -15,6 +15,11 @@ const MyLibrary: React.FC = () => {
     setSessions(all);
   }, []);
 
+  const handleDelete = (id: string) => {
+    deleteSession(id);
+    setSessions((prev) => prev.filter((s) => s.id !== id));
+  };
+
   return (
     <div style={{ display: "flex", minHeight: "100vh" }}>
       <Sidebar />
@@ -24,12 +29,16 @@ const MyLibrary: React.FC = () => {
 
         {sessions.length === 0 ? (
           <p style={styles.emptyText}>
-            No completed sessions yet. Finish a session in the workspace to see it here!
+            No completed sessions yet. Finish a session in the workspace to see
+            it here!
           </p>
         ) : (
           <div style={styles.cardGrid}>
             {sessions.map((session) => (
-              <StudyCard key={session.id} session={session} />
+              <StudyCard 
+              key={session.id} 
+              session={session} 
+              onDelete={handleDelete}/>
             ))}
           </div>
         )}

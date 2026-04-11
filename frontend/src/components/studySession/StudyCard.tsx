@@ -6,20 +6,32 @@ import { formatLastAccessed } from "../../utils/sessionStorage";
 
 interface StudyCardProps {
   session: StudySession;
+  onDelete?: (id: string) => void;
 }
 
-const StudyCard: React.FC<StudyCardProps> = ({ session }) => {
+const StudyCard: React.FC<StudyCardProps> = ({ session, onDelete }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
     navigate("/study-workspace", { state: { sessionId: session.id } });
   };
 
+  const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+
+    if (!onDelete) return;
+
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this session?",
+    );
+    if (confirmed) {
+      onDelete(session.id);
+    }
+  };
+
   return (
-    <button
-      type="button"
+    <div
       style={styles.studyCard}
-      onClick={handleClick}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-3px)";
         e.currentTarget.style.boxShadow = StudySessionColors.shadowLg;
@@ -31,11 +43,33 @@ const StudyCard: React.FC<StudyCardProps> = ({ session }) => {
         e.currentTarget.style.borderColor = StudySessionColors.studyCardBorder;
       }}
     >
-      <p style={styles.studyTitle}>{session.title}</p>
-      <p style={styles.studySubtitle}>
-        Last accessed · {formatLastAccessed(session.lastAccessedAt)}
-      </p>
-    </button>
+      <div
+        role="button"
+        tabIndex={0}
+        style={styles.cardContent}
+        onClick={handleClick}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            handleClick();
+          }
+        }}
+      >
+        <p style={styles.studyTitle}>{session.title}</p>
+        <p style={styles.studySubtitle}>
+          Last accessed · {formatLastAccessed(session.lastAccessedAt)}
+        </p>
+      </div>
+
+      {onDelete && (
+        <button
+          type="button"
+          style={styles.deleteButton}
+          onClick={handleDelete}
+        >
+          Delete
+        </button>
+      )}
+    </div>
   );
 };
 
@@ -49,11 +83,17 @@ const styles: { [key: string]: React.CSSProperties } = {
     border: `1px solid ${StudySessionColors.studyCardBorder}`,
     padding: "20px 18px",
     borderRadius: 14,
-    textAlign: "left",
-    cursor: "pointer",
-    font: "inherit",
-    transition: "transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease",
+    justifyContent: "space-between",
+    transition:
+      "transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease",
     boxShadow: StudySessionColors.shadowSm,
+    display: "flex",
+    flexDirection: "column",
+    gap: "14px",
+  },
+  cardContent: {
+    cursor: "pointer",
+    outline: "none",
   },
   studyTitle: {
     fontSize: 17,
@@ -68,6 +108,19 @@ const styles: { [key: string]: React.CSSProperties } = {
     margin: 0,
     color: StudySessionColors.studySubtitle,
   },
+
+  deleteButton: {
+  alignSelf: "flex-end",
+  padding: "8px 14px",
+  borderRadius: 8,
+  border: "none",
+  backgroundColor: "#e85d75",
+  color: "#fff",
+  fontSize: 13,
+  fontWeight: 600,
+  cursor: "pointer",
+  opacity: 0.8,
+}
 };
 
 export default StudyCard;

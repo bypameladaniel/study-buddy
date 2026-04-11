@@ -7,6 +7,7 @@ import editPencil from "../assets/edit-pencil.svg";
 import defaultProfilePhoto from "../assets/default-pfp.jpeg";
 import { auth } from "../config/firebase";
 import { deleteUser } from "firebase/auth";
+import LoadingOverlay from "../components/extra/LoadingPageOverlay";
 
 type Feedback = { kind: "success" | "error"; text: string };
 
@@ -27,6 +28,8 @@ const Profile: React.FC = () => {
   const [deleteModalError, setDeleteModalError] = useState<string | null>(null);
 
   const confirmInputRef = useRef<HTMLInputElement>(null);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   React.useEffect(() => {
     if (profile) {
@@ -115,6 +118,7 @@ const Profile: React.FC = () => {
 
     setDeleteBusy(true);
     setDeleteModalError(null);
+    setIsLoading(true);
 
     try {
       await deleteUser(auth.currentUser);
@@ -132,7 +136,9 @@ const Profile: React.FC = () => {
         );
       } else {
         setDeleteModalError("Something went wrong. Please try again.");
+        
       }
+      setIsLoading(false);
     } finally {
       setDeleteBusy(false);
     }
@@ -432,6 +438,7 @@ const Profile: React.FC = () => {
           </div>
         </div>
       )}
+      {isLoading && <LoadingOverlay text="Deleting account..."/>}
     </div>
   );
 };
