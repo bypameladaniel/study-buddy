@@ -16,18 +16,11 @@ const StudyCard: React.FC<StudyCardProps> = ({ session, onDelete }) => {
     navigate("/study-workspace", { state: { sessionId: session.id } });
   };
 
-  const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-
-    if (!onDelete) return;
-
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this session?",
-    );
-    if (confirmed) {
-      onDelete(session.id);
-    }
-  };
+const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
+  e.stopPropagation();
+  if (!onDelete) return;
+  onDelete(session.id);
+};
 
   return (
     <div

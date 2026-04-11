@@ -38,7 +38,7 @@ export function createSessionId(): string {
 export const deleteSession = (id: string) => {
   const sessions = getSessions();
   const updated = sessions.filter((s) => s.id !== id);
-  localStorage.setItem("sessions", JSON.stringify(updated));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
 };
 
 export function formatLastAccessed(timestamp: number): string {
