@@ -12,7 +12,6 @@ const QuizDisplay: React.FC<Props> = ({ rawData }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState("");
   const [shortAnswer, setShortAnswer] = useState("");
-  const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [submittedAnswers, setSubmittedAnswers] = useState<
     { userAnswer: string; isCorrect: boolean }[]
@@ -46,10 +45,6 @@ const QuizDisplay: React.FC<Props> = ({ rawData }) => {
     setSubmittedAnswers(updatedAnswers);
 
     setSubmittedAnswers(updatedAnswers);
-
-    if (isCorrect) {
-      setScore((prev) => prev + 1);
-    }
 
     setSelectedOption("");
     setShortAnswer("");
