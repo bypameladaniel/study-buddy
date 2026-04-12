@@ -47,3 +47,7 @@ VITE_GROQ_API_KEY=
 6. Install dependencies `npm i`
 7. Run application `npm run dev`
 8. Open browser to `http://localhost:5173`
+
+https://github.com/user-attachments/assets/694582bc-2205-4bf2-95ec-95a8573b2301
+
+
