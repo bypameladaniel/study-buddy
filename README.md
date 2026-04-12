@@ -48,6 +48,11 @@ VITE_GROQ_API_KEY=
 7. Run application `npm run dev`
 8. Open browser to `http://localhost:5173`
 
+
+# Limitations
+Please be aware of usage limits for each provided model. There is a list of 4 models that were tested and work well with the premade prompts. If you have usage limits you can add/switch to different models provided by Groq. [Click here to view the list of models](https://console.groq.com/docs/models)
+
+# Small Preview
 https://github.com/user-attachments/assets/694582bc-2205-4bf2-95ec-95a8573b2301
 
 
