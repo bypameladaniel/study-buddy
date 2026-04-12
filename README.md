@@ -45,8 +45,10 @@ VITE_GROQ_API_KEY=
    ⚠️Track usage and models on the Groq Dashboard
 5. Navigate to frontend directory `study-buddy/frontend`
 6. Install dependencies `npm i`
-7. Run application `npm run dev`
-8. Open browser to `http://localhost:5173`
+7. Run application:
+   - Development mode: `npm run dev`
+   - Production Build: `npm run build` `npm run preview`
+9. Open browser to `http://localhost:5173`
 
 
 # Limitations
